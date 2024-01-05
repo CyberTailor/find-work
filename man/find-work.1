@@ -1,0 +1,79 @@
+.\" SPDX-FileType: DOCUMENTATION
+.\" SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
+.\" SPDX-License-Identifier: CC0-1.0
+.\" No warranty
+.Dd January 4, 2024
+.Dt FIND-WORK 1
+.Os
+.Sh NAME
+.Nm find-work
+.Nd discover ebuilds to improve
+.Sh SYNOPSIS
+.Nm
+.Op Fl hV
+.Nm
+.Op Fl I
+.Ar module
+.Op Ar arg ...
+.Ar command
+.Sh DESCRIPTION
+.Nm
+provides global and module-specific options.
+Global options must precede the module name, and are as follows:
+.Bl -tag -width tenletters
+.It Fl h , -help
+Display usage information and exit immediately.
+.It Fl I , -installed
+Only match installed packages.
+.It Fl V , -version
+Display program version and exit immediately.
+.El
+.Pp
+The modules for
+.Nm
+are as follows:
+.Bl -tag -width repology
+.It Xo
+.Cm repology
+.Op Fl r Ar repo
+.Ar command
+.Xc
+.Dl Pq alias: Cm rep , Cm r
+.Pp
+This module uses Repology API to find work.
+.Pp
+.Ar command
+can be one of the following:
+.Bl -tag -width Ds
+.It Ic outdated Pq alias: Ic out , Ic o
+Find outdated packages.
+.El
+.Pp
+The options for
+.Cm find-work repology
+are as follows:
+.Bl -tag -width Ds
+.It Fl r Ar repo
+Repository name on repology.
+This option is required.
+Some examples for Gentoo include:
+.Bl -bullet -compact -width 1n
+.It
+.Ql gentoo
+.It
+.Ql gentoo_ovl_guru
+.It
+.Ql gentoo_ovl_pentoo
+.It
+.Ql gentoo_ovl_science
+.El
+.El
+.Sh EXIT STATUS
+.Ex -std
+.Sh EXAMPLES
+Find outdated GURU packages installed on your system using Repology data:
+.Pp
+.Dl "$ find-work repology -r gentoo_ovl_guru outdated"
+.Sh AUTHORS
+.An Anna
+.Aq Mt cyber@sysrq.in

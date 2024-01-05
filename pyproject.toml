@@ -1,0 +1,51 @@
+# SPDX-License-Identifier: CC0-1.0
+# SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
+
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "find-work"
+authors = [
+    {name = "Anna", email = "cyber@sysrq.in"},
+]
+dynamic = ["version", "description"]
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.10"
+dependencies = [
+    "click",
+    "click-aliases",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: DFSG approved",
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: System :: Software Distribution",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
+keywords = ["gentoo", "ebuild", "repository", "maintainer"]
+
+[project.scripts]
+find-work = "find_work.__main__:cli"
+
+[project.urls]
+Home = "https://find-work.sysrq.in"
+Source = "https://git.sysrq.in/find-work"
+Issues = "https://bugs.sysrq.in/enter_bug.cgi?product=Software&component=find-work"
+Changelog = "https://find-work.sysrq.in/release-notes.html"
+
+[tool.mypy]
+disallow_untyped_defs = true
+no_implicit_optional = true
+
+[[tool.mypy.overrides]]
+module = [
+    "click_aliases",
+]
+ignore_missing_imports = true
