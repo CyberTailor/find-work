@@ -40,6 +40,12 @@ Source = "https://git.sysrq.in/find-work"
 Issues = "https://bugs.sysrq.in/enter_bug.cgi?product=Software&component=find-work"
 Changelog = "https://find-work.sysrq.in/release-notes.html"
 
+[tool.flit.sdist]
+include = [
+    "Makefile",
+    "man/",
+]
+
 [tool.mypy]
 disallow_untyped_defs = true
 no_implicit_optional = true
