@@ -2,37 +2,22 @@
 # SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
 # No warranty
 
-from typing import Callable
-
 import click
 from click_aliases import ClickAliasedGroup
 
-import find_work
 import find_work.cli.repology
 from find_work.cli import Options
-
-
-def help_text(docstring: str) -> Callable:
-    """
-    Override function's docstring.
-
-    :param docstring: new docstring
-    :return: decorated function
-    """
-    def decorate(f: Callable) -> Callable:
-        f.__doc__ = docstring
-        return f
-    return decorate
+from find_work.constants import VERSION
 
 
 @click.group(cls=ClickAliasedGroup,
              context_settings={"help_option_names": ["-h", "--help"]})
 @click.option("-I", "--installed", is_flag=True,
               help="Only match installed packages.")
-@click.version_option(find_work.__version__, "-V", "--version")
+@click.version_option(VERSION, "-V", "--version")
 @click.pass_context
-@help_text(find_work.__doc__)
 def cli(ctx: click.Context, installed: bool) -> None:
+    """ Personal advice utility for Gentoo package maintainers. """
     ctx.ensure_object(Options)
     ctx.obj.only_installed = installed
 

@@ -2,20 +2,22 @@
 # SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
 # No warranty
 
-""" Modules implementing command-line functionality """
+""" Modules implementing command-line functionality. """
 
-from dataclasses import dataclass, field
+from dataclasses import field
+
+from pydantic.dataclasses import dataclass
 
 
 @dataclass
 class RepologyOptions:
-    """ Repology subcommand options """
+    """ Repology subcommand options. """
     repo: str = ""
 
 
 @dataclass
 class Options:
-    """ Global options """
+    """ Global options. """
     only_installed: bool = False
 
     repology: RepologyOptions = field(default_factory=RepologyOptions)

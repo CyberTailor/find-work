@@ -2,21 +2,27 @@
 # SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
 
 [build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "find-work"
+description = "Personal advice utility for Gentoo package maintainers"
 authors = [
     {name = "Anna", email = "cyber@sysrq.in"},
 ]
-dynamic = ["version", "description"]
+dynamic = ["version"]
 readme = "README.md"
-license = {file = "LICENSE"}
+license = "WTFPL"
 requires-python = ">=3.10"
 dependencies = [
+    "aiohttp<4,>=3",
     "click",
     "click-aliases",
+    "gentoopm<2",
+    "pydantic<3,>=2",
+    "repology-client<2,>=0.0.2",
+    "sortedcontainers",
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -31,6 +37,13 @@ classifiers = [
 ]
 keywords = ["gentoo", "ebuild", "repository", "maintainer"]
 
+[project.optional-dependencies]
+docs = [
+    "insipid-sphinx-theme",
+    "sphinx",
+    "sphinx-prompt",
+]
+
 [project.scripts]
 find-work = "find_work.__main__:cli"
 
@@ -40,10 +53,16 @@ Source = "https://git.sysrq.in/find-work"
 Issues = "https://bugs.sysrq.in/enter_bug.cgi?product=Software&component=find-work"
 Changelog = "https://find-work.sysrq.in/release-notes.html"
 
-[tool.flit.sdist]
+[tool.hatch.version]
+path = "find_work/constants.py"
+
+[tool.hatch.build.targets.sdist]
 include = [
-    "Makefile",
-    "man/",
+    "/find_work",
+
+    "/Makefile",
+    "/docs",
+    "/man",
 ]
 
 [tool.mypy]
@@ -53,5 +72,6 @@ no_implicit_optional = true
 [[tool.mypy.overrides]]
 module = [
     "click_aliases",
+    "gentoopm",
 ]
 ignore_missing_imports = true
