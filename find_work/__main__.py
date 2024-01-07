@@ -2,6 +2,8 @@
 # SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
 # No warranty
 
+from datetime import date
+
 import click
 from click_aliases import ClickAliasedGroup
 
@@ -21,6 +23,9 @@ def cli(ctx: click.Context, installed: bool) -> None:
     ctx.ensure_object(Options)
     ctx.obj.only_installed = installed
 
+    today = date.today().toordinal()
+    ctx.obj.cache_key += str(today).encode() + b"\0"
+
 
 @cli.group(aliases=["rep", "r"], cls=ClickAliasedGroup)
 @click.option("-r", "--repo", required=True,
@@ -29,6 +34,9 @@ def cli(ctx: click.Context, installed: bool) -> None:
 def repology(options: Options, repo: str) -> None:
     """ Use Repology to find work. """
     options.repology.repo = repo
+
+    options.cache_key += b"repology" + b"\0"
+    options.cache_key += repo.encode() + b"\0"
 
 
 repology.add_command(find_work.cli.repology.outdated, aliases=["out", "o"])
