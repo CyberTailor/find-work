@@ -21,6 +21,9 @@ class RepologyOptions:
 class Options:
     """ Global options. """
 
+    # Enable/disable colors.
+    colors: bool | None = None
+
     # Filter installed packages only
     only_installed: bool = False
 

@@ -84,20 +84,22 @@ async def _outdated(options: Options) -> None:
             data = await _fetch_outdated(options.repology.repo)
         except repology_client.exceptions.EmptyResponse:
             click.secho("Hmmm, no data returned. Most likely you've made a "
-                        "typo in the repository name.", fg="yellow")
+                        "typo in the repository name.",
+                        fg="yellow", color=options.colors)
             return
         write_json_cache(_projects_to_json(data), options.cache_key)
 
     outdated_set = _collect_version_bumps(data.values(), options)
     if len(outdated_set) == 0:
-        click.secho("Congrats! You have nothing to do!", fg="green")
+        click.secho("Congrats! You have nothing to do!",
+                    fg="green", color=options.colors)
         return
 
     for bump in outdated_set:
         click.echo(bump.atom + " ", nl=False)
-        click.secho(bump.old_version, fg="red", nl=False)
+        click.secho(bump.old_version, fg="red", color=options.colors, nl=False)
         click.echo(" → ", nl=False)
-        click.secho(bump.new_version, fg="green")
+        click.secho(bump.new_version, fg="green", color=options.colors)
 
 
 @click.command()

@@ -20,6 +20,8 @@ To discover, which outdated packages in GURU are installed on your system, run:
      must precede command name.
    * ``outdated`` is a command in the ``repology`` module.
 
+   .. seealso:: :manpage:`find-work.1` manual page
+
 You can use command aliases, for example:
 
 .. prompt:: bash
