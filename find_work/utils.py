@@ -27,8 +27,10 @@ async def aiohttp_session() -> AsyncGenerator[aiohttp.ClientSession, None]:
     timeout = aiohttp.ClientTimeout(total=30)
     session = aiohttp.ClientSession(headers=headers, timeout=timeout)
 
-    yield session
-    await session.close()
+    try:
+        yield session
+    finally:
+        await session.close()
 
 
 def _get_cache_path(cache_key: bytes) -> Path:
