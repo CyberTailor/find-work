@@ -43,7 +43,10 @@ docs = [
     "sphinx",
     "sphinx-prompt",
 ]
-test = ["pytest"]
+test = [
+    "pkgcore",
+    "pytest",
+]
 
 [project.scripts]
 find-work = "find_work.__main__:cli"
@@ -83,5 +86,6 @@ check_untyped_defs = true
 module = [
     "click_aliases",
     "gentoopm",
+    "gentoopm.*",
 ]
 ignore_missing_imports = true

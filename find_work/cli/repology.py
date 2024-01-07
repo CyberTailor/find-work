@@ -11,6 +11,7 @@ import click
 import gentoopm
 import repology_client
 import repology_client.exceptions
+from gentoopm.basepm.atom import PMAtom
 from pydantic import RootModel
 from repology_client.types import Package
 from sortedcontainers import SortedSet
@@ -48,29 +49,24 @@ def _projects_to_json(data: dict[str, set[Package]]) -> dict[str, list]:
 
 def _collect_version_bumps(data: Iterable[set[Package]],
                            options: Options) -> SortedSet[VersionBump]:
-    if options.only_installed:
-        pm = gentoopm.get_package_manager()
+    pm = gentoopm.get_package_manager()
 
     result: SortedSet[VersionBump] = SortedSet()
     for packages in data:
-        atom: str | None = None
-        old_version: str | None = None
+        latest: PMAtom | None = None  # latest in repo, not across repos!
         new_version: str | None = None
 
         for pkg in packages:
-            if atom and old_version and new_version:
-                break
-
             if pkg.repo == options.repology.repo:
-                atom = pkg.visiblename
-                old_version = pkg.version
+                atom = pm.Atom(f"={pkg.visiblename}-{pkg.version}")
+                if latest is None or atom.version > latest.version:
+                    latest = atom
             elif pkg.status == "newest":
                 new_version = pkg.version
 
-        if atom is not None:
-            if not (options.only_installed and atom not in pm.installed):
-                result.add(VersionBump(atom,
-                                       old_version or "(unknown)",
+        if latest is not None:
+            if not (options.only_installed and latest not in pm.installed):
+                result.add(VersionBump(str(latest.key), str(latest.version),
                                        new_version or "(unknown)"))
     return result
 

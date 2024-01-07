@@ -8,4 +8,9 @@ Release Notes
 0.1.0
 -----
 
+* [repology/outdated]: print latest of packaged version instead of a random one.
+
+0.1.0
+-----
+
 * First release.
