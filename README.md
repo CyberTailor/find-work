@@ -17,7 +17,8 @@ Installing
 
 ```sh
 eselect repository enable guru
-emerge app-portage/find-work
+emaint sync -r guru
+emerge dev-util/find-work
 ```
 
 ### Other systems

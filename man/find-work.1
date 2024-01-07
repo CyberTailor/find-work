@@ -1,6 +1,6 @@
 .\" SPDX-FileType: DOCUMENTATION
 .\" SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
-.\" SPDX-License-Identifier: CC0-1.0
+.\" SPDX-License-Identifier: WTFPL
 .\" No warranty
 .Dd January 4, 2024
 .Dt FIND-WORK 1
@@ -17,6 +17,10 @@
 .Op Ar arg ...
 .Ar command
 .Sh DESCRIPTION
+.Nm
+is a fun little tool that lets you discover what you can do for Gentoo as a package mantainer.
+It contains filters to show only packages you might be interested in.
+.Pp
 .Nm
 provides global and module-specific options.
 Global options must precede the module name, and are as follows:
@@ -53,7 +57,7 @@ The options for
 .Cm find-work repology
 are as follows:
 .Bl -tag -width Ds
-.It Fl r Ar repo
+.It Fl r Ar repo , Fl -repo Ar repo
 Repository name on repology.
 This option is required.
 Some examples for Gentoo include:
@@ -73,7 +77,7 @@ Some examples for Gentoo include:
 .Sh EXAMPLES
 Find outdated GURU packages installed on your system using Repology data:
 .Pp
-.Dl "$ find-work repology -r gentoo_ovl_guru outdated"
+.Dl "$ find-work -I repology -r gentoo_ovl_guru outdated"
 .Sh AUTHORS
 .An Anna
 .Aq Mt cyber@sysrq.in
