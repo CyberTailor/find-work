@@ -20,7 +20,7 @@ from find_work.constants import PACKAGE, USER_AGENT
 @asynccontextmanager
 async def aiohttp_session() -> AsyncGenerator[aiohttp.ClientSession, None]:
     """
-    Construct an :external+aiohttp:py:class:`aiohttp.ClientSession` object.
+    Construct an :py:class:`aiohttp.ClientSession` object.
     """
 
     headers = {"user-agent": USER_AGENT}

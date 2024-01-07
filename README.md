@@ -23,7 +23,10 @@ emerge dev-util/find-work
 
 ### Other systems
 
-`pip install find-work --user`
+```sh
+pip install find-work --user
+sudo make install-data
+```
 
 
 Packaging

@@ -18,6 +18,7 @@ release = '0.1.0'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
+    'sphinx.ext.intersphinx',
     'sphinx_prompt',
 ]
 
@@ -42,6 +43,11 @@ root_doc = 'toc'
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 manpages_url = 'https://docs.sysrq.in/{path}'
+
+intersphinx_mapping = {
+    'aiohttp': ('https://docs.aiohttp.org/en/stable', None),
+    'click': ('https://click.palletsprojects.com/en/latest', None),
+}
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
