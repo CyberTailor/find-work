@@ -57,7 +57,7 @@ def _collect_version_bumps(data: Iterable[set[Package]],
         new_version: str | None = None
 
         for pkg in packages:
-            if pkg.repo == options.repology.repo:
+            if pkg.status == "outdated" and pkg.repo == options.repology.repo:
                 atom = pm.Atom(f"={pkg.visiblename}-{pkg.version}")
                 if latest is None or atom.version > latest.version:
                     latest = atom
@@ -65,7 +65,7 @@ def _collect_version_bumps(data: Iterable[set[Package]],
                 new_version = pkg.version
 
         if latest is not None:
-            if not (options.only_installed and latest not in pm.installed):
+            if not (options.only_installed and latest.key not in pm.installed):
                 result.add(VersionBump(str(latest.key), str(latest.version),
                                        new_version or "(unknown)"))
     return result
