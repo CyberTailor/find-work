@@ -37,6 +37,7 @@ def test_collect_version_bumps():
     options = Options()
     options.only_installed = False
     options.repology.repo = "example_linux"
+
     pkg1 = Package(
         repo="example_linux",
         visiblename="examplepkg",
@@ -45,13 +46,13 @@ def test_collect_version_bumps():
     )
     pkg2 = Package(
         repo="example_bsd",
-        visiblename="examplepkg",
+        visiblename="python-examplepkg",
         version="2",
         status="newest",
     )
     pkg3 = Package(
         repo="example_macos",
-        visiblename="examplepkg",
+        visiblename="py3-examplepkg",
         version="1",
         status="outdated",
     )
