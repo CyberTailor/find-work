@@ -16,7 +16,7 @@ First, get the source code:
 
    git clone https://git.sysrq.in/find-work
 
-Make some changes and run the linters:
+Make some changes and run the tests and the linters:
 
 .. prompt:: bash
 
