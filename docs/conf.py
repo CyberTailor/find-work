@@ -18,6 +18,7 @@ release = '0.1.1'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
+    'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
     'sphinx_prompt',
 ]
@@ -44,6 +45,9 @@ templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 manpages_url = 'https://docs.sysrq.in/{path}'
 
+extlinks = {
+    'bug': ('https://bugs.sysrq.in/show_bug.cgi?id=%s', 'bug #%s')
+}
 intersphinx_mapping = {
     'aiohttp': ('https://docs.aiohttp.org/en/stable', None),
     'click': ('https://click.palletsprojects.com/en/latest', None),

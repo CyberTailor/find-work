@@ -53,18 +53,19 @@ def _collect_version_bumps(data: Iterable[set[Package]],
 
     result: SortedSet[VersionBump] = SortedSet()
     for packages in data:
-        latest: PMAtom | None = None  # latest in repo, not across repos!
+        latest_pkgs: dict[str, PMAtom] = {}  # latest in repo, not across repos!
         new_version: str | None = None
 
         for pkg in packages:
             if pkg.status == "outdated" and pkg.repo == options.repology.repo:
+                latest = latest_pkgs.get(pkg.visiblename)
                 atom = pm.Atom(f"={pkg.visiblename}-{pkg.version}")
                 if latest is None or atom.version > latest.version:
-                    latest = atom
+                    latest_pkgs[pkg.visiblename] = atom
             elif pkg.status == "newest":
                 new_version = pkg.version
 
-        if latest is not None:
+        for latest in latest_pkgs.values():
             if not (options.only_installed and latest.key not in pm.installed):
                 result.add(VersionBump(str(latest.key), str(latest.version),
                                        new_version or "(unknown)"))

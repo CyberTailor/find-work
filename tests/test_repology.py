@@ -38,60 +38,113 @@ def test_collect_version_bumps():
     options.only_installed = False
     options.repology.repo = "example_linux"
 
-    pkg1 = Package(
-        repo="example_linux",
-        visiblename="examplepkg",
-        version="1",
-        status="outdated",
-    )
-    pkg2 = Package(
-        repo="example_bsd",
-        visiblename="python-examplepkg",
-        version="2",
-        status="newest",
-    )
-    pkg3 = Package(
-        repo="example_macos",
-        visiblename="py3-examplepkg",
-        version="1",
-        status="outdated",
-    )
-    data = [{pkg1, pkg2, pkg3}]
+    data = [
+        {
+            Package(
+                repo="example_linux",
+                visiblename="dev-util/examplepkg",
+                version="1",
+                status="outdated",
+            ),
+            Package(
+                repo="example_bsd",
+                visiblename="python-examplepkg",
+                version="2",
+                status="newest",
+            ),
+            Package(
+                repo="example_macos",
+                visiblename="py3-examplepkg",
+                version="1",
+                status="outdated",
+            ),
+        }
+    ]
 
-    expected = SortedSet([VersionBump("examplepkg", "1", "2")])
+    expected = SortedSet([VersionBump("dev-util/examplepkg", "1", "2")])
     assert expected == _collect_version_bumps(data, options)
 
 
-def test_collect_version_bumps_multi():
+def test_collect_version_bumps_multi_versions():
     options = Options()
     options.only_installed = False
     options.repology.repo = "example_linux"
 
-    pkg0 = Package(
-        repo="example_linux",
-        visiblename="examplepkg",
-        version="0",
-        status="outdated",
-    )
-    pkg1 = Package(
-        repo="example_linux",
-        visiblename="examplepkg",
-        version="1",
-        status="outdated",
-    )
-    pkg2 = Package(
-        repo="example_bsd",
-        visiblename="python-examplepkg",
-        version="2",
-        status="newest",
-    )
-    pkg3 = Package(
-        repo="example_macos",
-        visiblename="py3-examplepkg",
-        version="1",
-        status="outdated",
-    )
-    data = [{pkg1, pkg2, pkg3}]
+    data = [
+        {
+            Package(
+                repo="example_linux",
+                visiblename="dev-util/examplepkg",
+                version="0",
+                status="outdated",
+            ),
+            Package(
+                repo="example_linux",
+                visiblename="dev-util/examplepkg",
+                version="1",
+                status="outdated",
+            ),
+            Package(
+                repo="example_bsd",
+                visiblename="python-examplepkg",
+                version="2",
+                status="newest",
+            ),
+            Package(
+                repo="example_macos",
+                visiblename="py3-examplepkg",
+                version="1",
+                status="outdated",
+            ),
+        }
+    ]
 
-    expected = SortedSet([VersionBump("examplepkg", "1", "2")])
+    expected = SortedSet([VersionBump("dev-util/examplepkg", "1", "2")])
+    assert expected == _collect_version_bumps(data, options)
+
+
+def test_collect_version_bumps_multi_names():
+    options = Options()
+    options.only_installed = False
+    options.repology.repo = "example_linux"
+
+    data = [
+        {
+            Package(
+                repo="example_linux",
+                visiblename="dev-util/examplepkg",
+                version="0",
+                status="outdated",
+            ),
+            Package(
+                repo="example_linux",
+                visiblename="dev-util/examplepkg",
+                version="1",
+                status="outdated",
+            ),
+            Package(
+                repo="example_linux",
+                visiblename="dev-util/examplepkg-bin",
+                version="1",
+                status="outdated",
+            ),
+            Package(
+                repo="example_bsd",
+                visiblename="python-examplepkg",
+                version="2",
+                status="newest",
+            ),
+            Package(
+                repo="example_macos",
+                visiblename="py3-examplepkg",
+                version="1",
+                status="outdated",
+            ),
+        }
+    ]
+
+    expected = SortedSet([
+        VersionBump("dev-util/examplepkg", "1", "2"),
+        VersionBump("dev-util/examplepkg-bin", "1", "2"),
+    ])
     assert expected == _collect_version_bumps(data, options)
