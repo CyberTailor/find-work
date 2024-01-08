@@ -58,8 +58,11 @@ def _collect_version_bumps(data: Iterable[set[Package]],
 
         for pkg in packages:
             if pkg.status == "outdated" and pkg.repo == options.repology.repo:
+                # ``pkg.version`` can contain spaces, better avoid it!
+                origversion = pkg.origversion or pkg.version
+                atom = pm.Atom(f"={pkg.visiblename}-{origversion}")
+
                 latest = latest_pkgs.get(pkg.visiblename)
-                atom = pm.Atom(f"={pkg.visiblename}-{pkg.version}")
                 if latest is None or atom.version > latest.version:
                     latest_pkgs[pkg.visiblename] = atom
             elif pkg.status == "newest":

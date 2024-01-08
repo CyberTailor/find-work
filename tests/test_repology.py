@@ -113,7 +113,8 @@ def test_collect_version_bumps_multi_names():
             Package(
                 repo="example_linux",
                 visiblename="dev-util/examplepkg",
-                version="0",
+                version="0 pre-release",
+                origversion="0",
                 status="outdated",
             ),
             Package(

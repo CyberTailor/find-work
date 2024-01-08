@@ -10,6 +10,7 @@ Release Notes
 
 * [repology/outdated]: fix :bug:`2`, where different packages of the same
   projects crashed the utility.
+* [repology/outdated]: use ``origversion`` if defined to prevent crashes.
 
 0.1.1
 -----
