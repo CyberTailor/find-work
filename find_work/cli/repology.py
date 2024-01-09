@@ -16,9 +16,13 @@ from pydantic import RootModel
 from repology_client.types import Package
 from sortedcontainers import SortedSet
 
-from find_work.cli import Options
+from find_work.cli import Options, ProgressDots
 from find_work.types import VersionBump
-from find_work.utils import aiohttp_session, read_json_cache, write_json_cache
+from find_work.utils import (
+    aiohttp_session,
+    read_json_cache,
+    write_json_cache,
+)
 
 
 async def _fetch_outdated(repo: str) -> dict[str, set[Package]]:
@@ -76,30 +80,39 @@ def _collect_version_bumps(data: Iterable[set[Package]],
 
 
 async def _outdated(options: Options) -> None:
-    cached_data = read_json_cache(options.cache_key)
+    dots = ProgressDots(options.verbose)
+
+    options.vecho("Checking for cached data", nl=False, err=True)
+    with dots():
+        cached_data = read_json_cache(options.cache_key)
     if cached_data is not None:
-        data = _projects_from_json(cached_data)
+        options.vecho("Loading cached data", nl=False, err=True)
+        with dots():
+            data = _projects_from_json(cached_data)
     else:
         try:
-            data = await _fetch_outdated(options.repology.repo)
+            options.vecho("Fetching data from Repology API", nl=False, err=True)
+            with dots():
+                data = await _fetch_outdated(options.repology.repo)
         except repology_client.exceptions.EmptyResponse:
-            click.secho("Hmmm, no data returned. Most likely you've made a "
-                        "typo in the repository name.",
-                        fg="yellow", color=options.colors)
+            options.secho("Hmmm, no data returned. Most likely you've made a "
+                          "typo in the repository name.", fg="yellow")
             return
-        write_json_cache(_projects_to_json(data), options.cache_key)
+        options.vecho("Caching data", nl=False, err=True)
+        with dots():
+            json_data = _projects_to_json(data)
+            write_json_cache(json_data, options.cache_key)
 
     outdated_set = _collect_version_bumps(data.values(), options)
     if len(outdated_set) == 0:
-        click.secho("Congrats! You have nothing to do!",
-                    fg="green", color=options.colors)
+        options.secho("Congrats! You have nothing to do!", fg="green")
         return
 
     for bump in outdated_set:
-        click.echo(bump.atom + " ", nl=False)
-        click.secho(bump.old_version, fg="red", color=options.colors, nl=False)
-        click.echo(" → ", nl=False)
-        click.secho(bump.new_version, fg="green", color=options.colors)
+        options.echo(bump.atom + " ", nl=False)
+        options.secho(bump.old_version, fg="red", nl=False)
+        options.echo(" → ", nl=False)
+        options.secho(bump.new_version, fg="green")
 
 
 @click.command()

@@ -15,18 +15,21 @@ from find_work.constants import VERSION
 
 @click.group(cls=ClickAliasedGroup,
              context_settings={"help_option_names": ["-h", "--help"]})
+@click.option("-q", "--quiet", is_flag=True,
+              help="Be less verbose.")
 @click.option("-I", "--installed", is_flag=True,
               help="Only match installed packages.")
 @click.version_option(VERSION, "-V", "--version")
 @click.pass_context
-def cli(ctx: click.Context, installed: bool) -> None:
+def cli(ctx: click.Context, quiet: bool, installed: bool) -> None:
     """ Personal advice utility for Gentoo package maintainers. """
 
     ctx.ensure_object(Options)
     options: Options = ctx.obj
 
+    options.verbose = not quiet
     options.only_installed = installed
-    if "NOCOLOR" in os.environ:
+    if any(var in os.environ for var in ["NOCOLOR", "NO_COLOR"]):
         options.colors = False
 
     today = date.today().toordinal()

@@ -12,7 +12,7 @@
 .Nm
 .Op Fl hV
 .Nm
-.Op Fl I
+.Op Fl qI
 .Ar module
 .Op Ar arg ...
 .Ar command
@@ -27,6 +27,8 @@ Global options must precede the module name, and are as follows:
 .Bl -tag -width tenletters
 .It Fl h , -help
 Display usage information and exit immediately.
+.It Fl q , -quiet
+Be less verbose.
 .It Fl I , -installed
 Only match installed packages.
 .It Fl V , -version
@@ -74,7 +76,7 @@ Some examples for Gentoo include:
 .El
 .Sh ENVIRONMENT
 .Bl -tag -width NOCOLOR
-.It Ev NOCOLOR
+.It Ev NO_COLOR
 If defined, disable all color output.
 .El
 .Sh EXIT STATUS
