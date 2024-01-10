@@ -13,6 +13,7 @@
 .Op Fl hV
 .Nm
 .Op Fl qI
+.Op Fl m Ar email
 .Ar module
 .Op Ar arg ...
 .Ar command
@@ -24,9 +25,11 @@ It contains filters to show only packages you might be interested in.
 .Nm
 provides global and module-specific options.
 Global options must precede the module name, and are as follows:
-.Bl -tag -width tenletters
+.Bl -tag -width Ds
 .It Fl h , -help
 Display usage information and exit immediately.
+.It Fl m Ar email , Fl -maintainer Ar email
+Only match packages maintained by the specified person.
 .It Fl q , -quiet
 Be less verbose.
 .It Fl I , -installed

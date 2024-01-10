@@ -16,6 +16,7 @@ from typing import Any
 import aiohttp
 
 from find_work.constants import PACKAGE, USER_AGENT
+from find_work.types import CacheKey
 
 with warnings.catch_warnings():
     # Disable annoying warning shown to LibreSSL users
@@ -54,16 +55,16 @@ def _get_cache_path(cache_key: bytes) -> Path:
     return file.with_suffix(".json")
 
 
-def write_json_cache(data: Any, cache_key: bytes, **kwargs: Any) -> None:
+def write_json_cache(data: Any, cache_key: CacheKey, **kwargs: Any) -> None:
     """
     Write a JSON cache file in a temporary directory. Keyword arguments are
     passed to :py:function:`json.dump` as is.
 
     :param data: data to serialize
-    :param cache_key: byte string to use as a key
+    :param cache_key: cache key object
     """
 
-    cache = _get_cache_path(cache_key)
+    cache = _get_cache_path(bytes(cache_key))
     try:
         cache.parent.mkdir(parents=True, exist_ok=True)
     except OSError:
@@ -76,16 +77,16 @@ def write_json_cache(data: Any, cache_key: bytes, **kwargs: Any) -> None:
             pass
 
 
-def read_json_cache(cache_key: bytes, **kwargs: Any) -> Any | None:
+def read_json_cache(cache_key: CacheKey, **kwargs: Any) -> Any | None:
     """
     Read a JSON cache file stored in a temporary directory. Keyword arguments
     are passed to :py:function:`json.load` as is.
 
-    :param cache_key: byte string to use as a key
+    :param cache_key: cache key object
     :returns: decoded data or ``None``
     """
 
-    cache = _get_cache_path(cache_key)
+    cache = _get_cache_path(bytes(cache_key))
     if not cache.is_file():
         return None
 

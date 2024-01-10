@@ -141,7 +141,7 @@ def _collect_bump_requests(data: Iterable[Bug],
 @click.pass_obj
 def outdated(options: Options) -> None:
     """ Find packages with version bump requests on Bugzilla. """
-    options.cache_key += b"outdated" + b"\0"
+    options.cache_key.feed("outdated")
     dots = ProgressDots(options.verbose)
 
     options.vecho("Checking for cached data", nl=False, err=True)

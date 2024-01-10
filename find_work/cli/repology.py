@@ -118,5 +118,5 @@ async def _outdated(options: Options) -> None:
 @click.pass_obj
 def outdated(options: Options) -> None:
     """ Find outdated packages. """
-    options.cache_key += b"outdated" + b"\0"
+    options.cache_key.feed("outdated")
     asyncio.run(_outdated(options))

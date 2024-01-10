@@ -16,13 +16,16 @@ from find_work.constants import VERSION
 
 @click.group(cls=ClickAliasedGroup,
              context_settings={"help_option_names": ["-h", "--help"]})
+@click.option("-m", "--maintainer", metavar="EMAIL",
+              help="Filter by package maintainer.")
 @click.option("-q", "--quiet", is_flag=True,
               help="Be less verbose.")
 @click.option("-I", "--installed", is_flag=True,
               help="Only match installed packages.")
 @click.version_option(VERSION, "-V", "--version")
 @click.pass_context
-def cli(ctx: click.Context, quiet: bool, installed: bool) -> None:
+def cli(ctx: click.Context, maintainer: str | None,
+        quiet: bool, installed: bool) -> None:
     """ Personal advice utility for Gentoo package maintainers. """
 
     ctx.ensure_object(Options)
@@ -33,14 +36,16 @@ def cli(ctx: click.Context, quiet: bool, installed: bool) -> None:
     if any(var in os.environ for var in ["NOCOLOR", "NO_COLOR"]):
         options.colors = False
 
-    today = date.today().toordinal()
-    options.cache_key += str(today).encode() + b"\0"
+    options.cache_key.feed(date.today().toordinal())
+    if maintainer:
+        options.maintainer = maintainer
+        options.cache_key.feed(maintainer=maintainer)
 
 
 @cli.group(aliases=["bug", "b"], cls=ClickAliasedGroup)
-@click.option("-c", "--component",
+@click.option("-c", "--component", metavar="NAME",
               help="Component name on Bugzilla.")
-@click.option("-p", "--product",
+@click.option("-p", "--product", metavar="NAME",
               help="Product name on Bugzilla.")
 @click.option("-t", "--time", is_flag=True,
               help="Sort bugs by time last modified.")
@@ -51,28 +56,26 @@ def bugzilla(options: Options, component: str | None, product: str | None,
 
     options.bugzilla.chronological_sort = time
 
-    options.cache_key += b"bugzilla" + b"\0"
-    options.cache_key += b"time:" + b"1" if time else b"0" + b"\0"
+    options.cache_key.feed("bugzilla")
+    options.cache_key.feed(time=time)
 
     if product:
         options.bugzilla.product = product
-        options.cache_key += b"product:" + product.encode() + b"\0"
+        options.cache_key.feed(product=product)
     if component:
         options.bugzilla.component = component
-        options.cache_key += b"component:" + component.encode() + b"\0"
+        options.cache_key.feed(component=component)
 
 
 @cli.group(aliases=["rep", "r"], cls=ClickAliasedGroup)
-@click.option("-r", "--repo", required=True,
+@click.option("-r", "--repo", metavar="NAME", required=True,
               help="Repository name on Repology.")
 @click.pass_obj
 def repology(options: Options, repo: str) -> None:
     """ Use Repology to find work. """
 
     options.repology.repo = repo
-
-    options.cache_key += b"repology" + b"\0"
-    options.cache_key += repo.encode() + b"\0"
+    options.cache_key.feed("repology", repo)
 
 
 bugzilla.add_command(find_work.cli.bugzilla.outdated, aliases=["out", "o"])

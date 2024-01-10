@@ -11,8 +11,9 @@ from dataclasses import field
 from typing import Any
 
 import click
-
 from pydantic.dataclasses import dataclass
+
+from find_work.types import CacheKey
 
 
 class ProgressDots:
@@ -79,6 +80,9 @@ class Options:
     # Enable/disable colors.
     colors: bool | None = None
 
+    # Maintainer email.
+    maintainer: str = ""
+
     # Enable/disable progress reporting.
     verbose: bool = True
 
@@ -86,7 +90,7 @@ class Options:
     only_installed: bool = False
 
     # Byte string used for creating cache key.
-    cache_key: bytes = b""
+    cache_key: CacheKey = field(default_factory=CacheKey)
 
     # Subcommand options.
     repology: RepologyOptions = field(default_factory=RepologyOptions)
