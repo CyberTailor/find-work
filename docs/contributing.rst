@@ -56,8 +56,8 @@ Adding a new module
 
 1. Create a new Python file in the :file:`find_work/cli` directory.
 2. Implement all logic here.
-3. Register commands in the :file:`gentle/__main__.py` file.
-4. Update the manpage.
+3. Register commands in the :file:`find_work/__main__.py` file.
+4. Update the manpage and release notes.
 
 Feel free to copy/paste from existing sources, I do the same.
 

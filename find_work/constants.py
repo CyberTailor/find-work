@@ -19,5 +19,8 @@ USER_AGENT = f"Mozilla/5.0 (compatible; {PACKAGE}/{VERSION}; +{HOMEPAGE})"
 # Gentoo Bugzilla location.
 BUGZILLA_URL = "https://bugs.gentoo.org"
 
-# Gentoo Packages API locations.
-PGO_API_URL = "https://packages.gentoo.org/api/graphql/"
+# Gentoo Packages location.
+PGO_BASE_URL = "https://packages.gentoo.org"
+
+# Gentoo Packages API location.
+PGO_API_URL = f"{PGO_BASE_URL}/api/graphql/"

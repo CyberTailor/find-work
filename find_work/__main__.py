@@ -90,5 +90,6 @@ def repology(options: Options, repo: str) -> None:
 bugzilla.add_command(find_work.cli.bugzilla.outdated, aliases=["out", "o"])
 
 pgo.add_command(find_work.cli.pgo.outdated, aliases=["out", "o"])
+pgo.add_command(find_work.cli.pgo.stabilization, aliases=["stab", "s"])
 
 repology.add_command(find_work.cli.repology.outdated, aliases=["out", "o"])

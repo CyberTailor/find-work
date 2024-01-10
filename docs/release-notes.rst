@@ -14,6 +14,9 @@ Release Notes
 * **New:** Discover outdated packages in the Gentoo repository (command: ``pgo
   outdated``).
 
+* **New:** Discover stabilization candidates in the Gentoo repository (command:
+  ``pgo stabilization``).
+
 * **New:** Filter results by maintainer.
 
 * Dependencies introduced:
