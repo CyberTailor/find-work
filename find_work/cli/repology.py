@@ -25,10 +25,15 @@ from find_work.utils import (
 )
 
 
-async def _fetch_outdated(repo: str) -> dict[str, set[Package]]:
+async def _fetch_outdated(options: Options) -> dict[str, set[Package]]:
+    filters: dict = {}
+    if options.maintainer:
+        filters["maintainer"] = options.maintainer
+
     async with aiohttp_session() as session:
-        return await repology_client.get_projects(inrepo=repo, outdated="on",
-                                                  count=5_000, session=session)
+        return await repology_client.get_projects(inrepo=options.repology.repo,
+                                                  outdated="on", count=5_000,
+                                                  session=session, **filters)
 
 
 def _projects_from_json(data: dict[str, list]) -> dict[str, set[Package]]:
@@ -90,13 +95,13 @@ async def _outdated(options: Options) -> None:
         with dots():
             data = _projects_from_json(cached_data)
     else:
+        options.vecho("Fetching data from Repology API", nl=False, err=True)
         try:
-            options.vecho("Fetching data from Repology API", nl=False, err=True)
             with dots():
-                data = await _fetch_outdated(options.repology.repo)
+                data = await _fetch_outdated(options)
         except repology_client.exceptions.EmptyResponse:
-            options.secho("Hmmm, no data returned. Most likely you've made a "
-                          "typo in the repository name.", fg="yellow")
+            options.secho("Hmmm, no data returned. Try again with different "
+                          "arguments.", fg="yellow")
             return
         options.vecho("Caching data", nl=False, err=True)
         with dots():
