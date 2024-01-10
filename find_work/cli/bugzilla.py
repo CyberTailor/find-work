@@ -108,6 +108,7 @@ def _fetch_bump_requests(options: Options) -> list[Bug]:
         query = bz.build_query(
             product=options.bugzilla.product or None,
             component=options.bugzilla.component or None,
+            assigned_to=options.maintainer or None,
             short_desc="version bump",
         )
         query["resolution"] = "---"
@@ -156,6 +157,10 @@ def outdated(options: Options) -> None:
         options.vecho("Fetching data from Bugzilla API", nl=False, err=True)
         with dots():
             data = _fetch_bump_requests(options)
+        if len(data) == 0:
+            options.secho("Hmmm, no data returned. Try again with "
+                          "different arguments.", fg="yellow")
+            return
         options.vecho("Caching data", nl=False, err=True)
         with dots():
             json_data = _bugs_to_json(data)

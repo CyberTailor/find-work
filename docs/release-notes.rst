@@ -8,9 +8,10 @@ Release Notes
 0.3.0
 -----
 
-* New module: ``bugzilla``
+* **New:** Discover version bump requests on Bugzilla (command: ``bugzilla
+  outdated``).
 
-  * New command: Discover version bump requests.
+* **New:** Filter results by maintainer.
 
 * Dependencies introduced:
 
