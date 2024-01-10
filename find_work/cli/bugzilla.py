@@ -41,7 +41,7 @@ import click
 import gentoopm
 from tabulate import tabulate
 
-from find_work.cli import Options, ProgressDots
+from find_work.cli import Message, Options, ProgressDots
 from find_work.constants import BUGZILLA_URL
 from find_work.types import BugView
 from find_work.utils import (
@@ -145,12 +145,12 @@ def outdated(options: Options) -> None:
     options.cache_key.feed("outdated")
     dots = ProgressDots(options.verbose)
 
-    options.vecho("Checking for cached data", nl=False, err=True)
+    options.say(Message.CACHE_LOAD)
     with dots():
         cached_data = read_json_cache(options.cache_key,
                                       object_hook=as_datetime)
     if cached_data is not None:
-        options.vecho("Loading cached data", nl=False, err=True)
+        options.say(Message.CACHE_READ)
         with dots():
             data = _bugs_from_json(cached_data)
     else:
@@ -158,16 +158,15 @@ def outdated(options: Options) -> None:
         with dots():
             data = _fetch_bump_requests(options)
         if len(data) == 0:
-            options.secho("Hmmm, no data returned. Try again with "
-                          "different arguments.", fg="yellow")
+            options.say(Message.EMPTY_RESPONSE)
             return
-        options.vecho("Caching data", nl=False, err=True)
+        options.say(Message.CACHE_WRITE)
         with dots():
             json_data = _bugs_to_json(data)
             write_json_cache(json_data, options.cache_key, cls=BugEncoder)
 
     bumps = _collect_bump_requests(data, options)
-    if len(bumps) == 0:
-        options.secho("Congrats! You have nothing to do!", fg="green")
-    else:
+    if len(bumps) != 0:
         options.echo(tabulate(bumps, tablefmt="plain"))  # type: ignore
+    else:
+        options.say(Message.NO_WORK)

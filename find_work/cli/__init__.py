@@ -8,6 +8,7 @@ import threading
 from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import field
+from enum import Enum, auto
 from typing import Any
 
 import click
@@ -73,6 +74,16 @@ class BugzillaOptions:
     chronological_sort: bool = False
 
 
+class Message(Enum):
+    """ Typical messages. """
+    CACHE_READ = auto()
+    CACHE_LOAD = auto()
+    CACHE_WRITE = auto()
+
+    EMPTY_RESPONSE = auto()
+    NO_WORK = auto()
+
+
 @dataclass
 class Options:
     """ Global options. """
@@ -116,3 +127,24 @@ class Options:
         """
         kwargs.pop("color", None)
         click.secho(*args, color=self.colors, **kwargs)  # type: ignore
+
+    def say(self, msgid: Message) -> None:
+        """
+        Output one of pre-configured messages to the terminal.
+
+        :param msgid: message type
+        """
+        match msgid:
+            case Message.CACHE_LOAD:
+                self.vecho("Checking for cached data", nl=False, err=True)
+            case Message.CACHE_READ:
+                self.vecho("Reading cached data", nl=False, err=True)
+            case Message.CACHE_WRITE:
+                self.vecho("Caching data", nl=False, err=True)
+            case Message.EMPTY_RESPONSE:
+                self.secho("Hmmm, no data returned. Try again with different "
+                           "arguments.", fg="yellow")
+            case Message.NO_WORK:
+                self.secho("Congrats! You have nothing to do!", fg="green")
+            case _:
+                raise TypeError(f"Unknown message identifier: {msgid}")

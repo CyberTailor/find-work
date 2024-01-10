@@ -16,7 +16,7 @@ from pydantic import RootModel
 from repology_client.types import Package
 from sortedcontainers import SortedSet
 
-from find_work.cli import Options, ProgressDots
+from find_work.cli import Message, Options, ProgressDots
 from find_work.types import VersionBump
 from find_work.utils import (
     aiohttp_session,
@@ -87,11 +87,11 @@ def _collect_version_bumps(data: Iterable[set[Package]],
 async def _outdated(options: Options) -> None:
     dots = ProgressDots(options.verbose)
 
-    options.vecho("Checking for cached data", nl=False, err=True)
+    options.say(Message.CACHE_LOAD)
     with dots():
         cached_data = read_json_cache(options.cache_key)
     if cached_data is not None:
-        options.vecho("Loading cached data", nl=False, err=True)
+        options.say(Message.CACHE_READ)
         with dots():
             data = _projects_from_json(cached_data)
     else:
@@ -100,10 +100,9 @@ async def _outdated(options: Options) -> None:
             with dots():
                 data = await _fetch_outdated(options)
         except repology_client.exceptions.EmptyResponse:
-            options.secho("Hmmm, no data returned. Try again with different "
-                          "arguments.", fg="yellow")
+            options.say(Message.EMPTY_RESPONSE)
             return
-        options.vecho("Caching data", nl=False, err=True)
+        options.say(Message.CACHE_WRITE)
         with dots():
             json_data = _projects_to_json(data)
             write_json_cache(json_data, options.cache_key)
@@ -116,7 +115,7 @@ async def _outdated(options: Options) -> None:
         options.secho(bump.new_version, fg="green")
 
     if len(outdated_set) == 0:
-        options.secho("Congrats! You have nothing to do!", fg="green")
+        options.say(Message.NO_WORK)
 
 
 @click.command()
