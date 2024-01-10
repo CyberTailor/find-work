@@ -46,11 +46,13 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 manpages_url = 'https://docs.sysrq.in/{path}'
 
 extlinks = {
-    'bug': ('https://bugs.sysrq.in/show_bug.cgi?id=%s', 'bug #%s')
+    'bug': ('https://bugs.sysrq.in/show_bug.cgi?id=%s', 'bug #%s'),
+    'pypi': ('https://pypi.org/project/%s/', '%s'),
 }
 intersphinx_mapping = {
     'aiohttp': ('https://docs.aiohttp.org/en/stable', None),
     'click': ('https://click.palletsprojects.com/en/latest', None),
+    'requests': ('https://requests.readthedocs.io/en/latest/', None),
 }
 
 # -- Options for HTML output -------------------------------------------------

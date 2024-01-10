@@ -5,6 +5,20 @@
 Release Notes
 =============
 
+0.3.0
+-----
+
+* New module: ``bugzilla``
+
+  * New command: Discover version bump requests.
+
+* Dependencies introduced:
+
+  * :pypi:`python-bugzilla`
+  * :pypi:`requests`
+  * :pypi:`tabulate`
+  * :pypi:`pytest-recording` *(test)*
+
 0.2.0
 -----
 

@@ -12,7 +12,7 @@ interested in.
 
 The following data sources are supported:
 
-* `Gentoo Bugzilla`
+* `Gentoo Bugzilla`_
 * `Repology`_
 
 .. _Gentoo Bugzilla: https://bugs.gentoo.org/
