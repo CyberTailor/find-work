@@ -21,8 +21,11 @@ dependencies = [
     "click-aliases",
     "gentoopm<2",
     "pydantic<3,>=2",
+    "python-bugzilla",
     "repology-client<2,>=0.0.2",
+    "requests<3,>=2",
     "sortedcontainers",
+    "tabulate",
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -46,6 +49,7 @@ docs = [
 test = [
     "pkgcore",
     "pytest",
+    "pytest-recording",
 ]
 
 [project.scripts]
@@ -70,6 +74,9 @@ include = [
     "/tests",
 ]
 
+[tool.pytest.ini_options]
+addopts = "--doctest-modules --block-network"
+
 [tool.mypy]
 disallow_untyped_defs = true
 no_implicit_optional = true
@@ -84,6 +91,8 @@ check_untyped_defs = true
 
 [[tool.mypy.overrides]]
 module = [
+    "bugzilla",
+    "bugzilla.*",
     "click_aliases",
     "gentoopm",
     "gentoopm.*",

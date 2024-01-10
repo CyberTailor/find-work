@@ -12,11 +12,13 @@ interested in.
 
 The following data sources are supported:
 
+* `Gentoo Bugzilla`
 * `Repology`_
 
+.. _Gentoo Bugzilla: https://bugs.gentoo.org/
 .. _Repology: https://repology.org/
 
-Support for other sources (like Bugzilla or Pkgcheck) is planned.
+Support for other sources (like Soko or pkgcheck) is planned.
 
 If you want to learn how to use find-work, check out the following resources:
 

@@ -16,3 +16,13 @@ class VersionBump:
     atom: str
     old_version: str = field(compare=False)
     new_version: str = field(compare=False)
+
+
+@dataclass(frozen=True, order=True)
+class BugView:
+    """ Bug listing item representation. """
+
+    bug_id: int
+    last_change_date: str = field(compare=False)
+    assigned_to: str = field(compare=False)
+    summary: str = field(compare=False)

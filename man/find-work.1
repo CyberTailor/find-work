@@ -40,8 +40,38 @@ The modules for
 are as follows:
 .Bl -tag -width repology
 .It Xo
+.Cm bugzilla
+.Ol Fl t
+.Op Fl c Ar name
+.Op Fl p Ar name
+.Ar command
+.Xc
+.Dl Pq alias: Cm bug , Cm b
+.Pp
+This module uses Gentoo Bugzilla to find work.
+.Pp
+.Ar command
+can be one of the following:
+.Bl -tag -width Ds
+.It Ic outdated Pq alias: Ic out , Ic o
+Find open version bump requests.
+.El
+.Pp
+The options for
+.Cm find-work bugzilla
+are as follows:
+.Bl -tag -width Ds
+.It Fl c Ar name , Fl -component Ar name
+Component name on Bugzilla.
+.It Fl p Ar name , Fl -product Ar name
+Product name on Bugzilla.
+.It Fl t , Fl -time
+Sort by time last modified (most recently modified first).
+.El
+.
+.It Xo
 .Cm repology
-.Op Fl r Ar repo
+.Fl r Ar repo
 .Ar command
 .Xc
 .Dl Pq alias: Cm rep , Cm r
@@ -60,7 +90,7 @@ The options for
 are as follows:
 .Bl -tag -width Ds
 .It Fl r Ar repo , Fl -repo Ar repo
-Repository name on repology.
+Repository name on Repology.
 This option is required.
 Some examples for Gentoo include:
 .Bl -bullet -compact -width 1n
@@ -75,7 +105,7 @@ Some examples for Gentoo include:
 .El
 .El
 .Sh ENVIRONMENT
-.Bl -tag -width NOCOLOR
+.Bl -tag -width NO_COLOR
 .It Ev NO_COLOR
 If defined, disable all color output.
 .El

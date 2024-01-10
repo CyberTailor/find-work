@@ -1,0 +1,8 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: find-work
+Upstream-Contact: Anna <cyber@sysrq.in>
+Source: https://find-work.sysrq.in/
+
+Files: tests/cassettes/test_bugzilla/*
+Copyright: Gentoo Authors
+License: CC0-1.0

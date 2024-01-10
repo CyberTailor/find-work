@@ -7,6 +7,7 @@
 import hashlib
 import json
 import tempfile
+import warnings
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -16,11 +17,16 @@ import aiohttp
 
 from find_work.constants import PACKAGE, USER_AGENT
 
+with warnings.catch_warnings():
+    # Disable annoying warning shown to LibreSSL users
+    warnings.simplefilter("ignore")
+    import requests
+
 
 @asynccontextmanager
 async def aiohttp_session() -> AsyncGenerator[aiohttp.ClientSession, None]:
     """
-    Construct an :py:class:`aiohttp.ClientSession` object.
+    Construct an :py:class:`aiohttp.ClientSession` object with out settings.
     """
 
     headers = {"user-agent": USER_AGENT}
@@ -33,18 +39,28 @@ async def aiohttp_session() -> AsyncGenerator[aiohttp.ClientSession, None]:
         await session.close()
 
 
+def requests_session() -> requests.Session:
+    """
+    Construct an :py:class:`requests.Session` object with out settings.
+    """
+    session = requests.Session()
+    session.headers["user-agent"] = USER_AGENT
+    return session
+
+
 def _get_cache_path(cache_key: bytes) -> Path:
     hexdigest = hashlib.sha256(cache_key).hexdigest()
     file = Path(tempfile.gettempdir()) / PACKAGE / hexdigest
     return file.with_suffix(".json")
 
 
-def write_json_cache(data: Any, cache_key: bytes) -> None:
+def write_json_cache(data: Any, cache_key: bytes, **kwargs: Any) -> None:
     """
-    Write a JSON cache file in a temporary directory.
+    Write a JSON cache file in a temporary directory. Keyword arguments are
+    passed to :py:function:`json.dump` as is.
 
     :param data: data to serialize
-    :param cache_key: hash object to use as a key
+    :param cache_key: byte string to use as a key
     """
 
     cache = _get_cache_path(cache_key)
@@ -55,16 +71,17 @@ def write_json_cache(data: Any, cache_key: bytes) -> None:
 
     with open(cache, "w") as file:
         try:
-            json.dump(data, file)
+            json.dump(data, file, **kwargs)
         except OSError:
             pass
 
 
-def read_json_cache(cache_key: bytes) -> Any | None:
+def read_json_cache(cache_key: bytes, **kwargs: Any) -> Any | None:
     """
-    Read a JSON cache file stored in a temporary directory.
+    Read a JSON cache file stored in a temporary directory. Keyword arguments
+    are passed to :py:function:`json.load` as is.
 
-    :param cache_key: hash object to use as a key
+    :param cache_key: byte string to use as a key
     :returns: decoded data or ``None``
     """
 
@@ -73,4 +90,4 @@ def read_json_cache(cache_key: bytes) -> Any | None:
         return None
 
     with open(cache) as file:
-        return json.load(file)
+        return json.load(file, **kwargs)

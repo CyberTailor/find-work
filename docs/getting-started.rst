@@ -28,5 +28,12 @@ You can use command aliases, for example:
 
    find-work -I rep -r gentoo_ovl_guru out
 
+To see which installed packages have open version bump requests filed on
+Bugzilla, sorted by date last updated, run:
+
+.. prompt:: bash
+
+   find-work -I bugzilla -t outdated
+
 All data from APIs is cached for a day, so don't hesitate running the command
 again and again!

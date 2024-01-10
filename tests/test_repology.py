@@ -5,9 +5,9 @@
 from sortedcontainers import SortedSet
 from repology_client.types import Package
 
+from find_work.types import VersionBump
 from find_work.cli import Options
 from find_work.cli.repology import (
-    VersionBump,
     _collect_version_bumps,
     _projects_from_json,
     _projects_to_json,
@@ -15,21 +15,24 @@ from find_work.cli.repology import (
 
 
 def test_projects_json_roundtrip():
-    pkg1 = Package(
-        repo="gentoo",
-        visiblename="www-client/firefox",
-        version="9999",
-        status="test",
-        licenses=frozenset(["GPL-2", "LGPL-2.1", "MPL-2.0"]),
-    )
-    pkg2 = Package(
-        repo="gentoo",
-        visiblename="www-client/firefox-bin",
-        version="9999",
-        status="test",
-        licenses=frozenset(["GPL-2", "LGPL-2.1", "MPL-2.0"]),
-    )
-    data = {"firefox": {pkg1, pkg2}}
+    data = {
+        "firefox": {
+            Package(
+                repo="gentoo",
+                visiblename="www-client/firefox",
+                version="9999",
+                status="test",
+                licenses=frozenset(["GPL-2", "LGPL-2.1", "MPL-2.0"]),
+            ),
+            Package(
+                repo="gentoo",
+                visiblename="www-client/firefox-bin",
+                version="9999",
+                status="test",
+                licenses=frozenset(["GPL-2", "LGPL-2.1", "MPL-2.0"]),
+            ),
+        },
+    }
     assert data == _projects_from_json(_projects_to_json(data))
 
 
@@ -58,7 +61,7 @@ def test_collect_version_bumps():
                 version="1",
                 status="outdated",
             ),
-        }
+        },
     ]
 
     expected = SortedSet([VersionBump("dev-util/examplepkg", "1", "2")])
@@ -96,7 +99,7 @@ def test_collect_version_bumps_multi_versions():
                 version="1",
                 status="outdated",
             ),
-        }
+        },
     ]
 
     expected = SortedSet([VersionBump("dev-util/examplepkg", "1", "2")])
@@ -141,7 +144,7 @@ def test_collect_version_bumps_multi_names():
                 version="1",
                 status="outdated",
             ),
-        }
+        },
     ]
 
     expected = SortedSet([

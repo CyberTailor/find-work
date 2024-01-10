@@ -13,5 +13,8 @@ VERSION = "0.2.0"
 # Application homepage.
 HOMEPAGE = "https://find-work.sysrq.in"
 
-# Application's User-agent header
+# Application's User-agent header.
 USER_AGENT = f"Mozilla/5.0 (compatible; {PACKAGE}/{VERSION}; +{HOMEPAGE})"
+
+# Gentoo Bugzilla location.
+BUGZILLA_URL = "https://bugs.gentoo.org"

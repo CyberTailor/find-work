@@ -1,0 +1,108 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: HEAD
+    uri: https://bugs.gentoo.org/xmlrpc.cgi
+  response:
+    body:
+      string: ''
+    headers:
+      Connection:
+      - Keep-Alive
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Wed, 10 Jan 2024 02:02:40 GMT
+      Keep-Alive:
+      - timeout=15, max=100
+      Server:
+      - Apache
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '<?xml version=''1.0''?>
+
+      <methodCall>
+
+      <methodName>Bugzilla.version</methodName>
+
+      <params>
+
+      <param>
+
+      <value><struct>
+
+      </struct></value>
+
+      </param>
+
+      </params>
+
+      </methodCall>
+
+      '
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '161'
+      Content-Type:
+      - text/xml
+      User-Agent:
+      - python-bugzilla/3.2.0
+    method: POST
+    uri: https://bugs.gentoo.org/xmlrpc.cgi
+  response:
+    body:
+      string: <?xml version="1.0" encoding="UTF-8"?><methodResponse><params><param><value><struct><member><name>version</name><value><string>5.0.6</string></value></member></struct></value></param></params></methodResponse>
+    headers:
+      Connection:
+      - Keep-Alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - text/xml
+      Content-security-policy:
+      - frame-ancestors 'self'
+      Date:
+      - Wed, 10 Jan 2024 02:02:41 GMT
+      ETag:
+      - 7sMmJjLeC0KDNcgYXJQLEw
+      Keep-Alive:
+      - timeout=15, max=100
+      SOAPServer:
+      - SOAP::Lite/Perl/1.27
+      Server:
+      - Apache
+      Set-Cookie:
+      - Bugzilla_login_request_cookie=0jZsUHjVEQ; path=/; secure; HttpOnly
+      Strict-transport-security:
+      - max-age=15768000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-content-type-options:
+      - nosniff
+      X-frame-options:
+      - SAMEORIGIN
+      X-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1

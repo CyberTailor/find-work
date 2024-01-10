@@ -54,8 +54,22 @@ class ProgressDots:
 class RepologyOptions:
     """ Repology subcommand options. """
 
-    # Repository name
+    # Repository name.
     repo: str = ""
+
+
+@dataclass
+class BugzillaOptions:
+    """ Bugzilla subcommand options. """
+
+    # Product name.
+    product: str = ""
+
+    # Component name.
+    component: str = ""
+
+    # Sort by date last modified or by ID.
+    chronological_sort: bool = False
 
 
 @dataclass
@@ -71,11 +85,12 @@ class Options:
     # Filter installed packages only
     only_installed: bool = False
 
-    # String used for creating cache key
+    # Byte string used for creating cache key.
     cache_key: bytes = b""
 
-    # Repology subcommand options
+    # Subcommand options.
     repology: RepologyOptions = field(default_factory=RepologyOptions)
+    bugzilla: BugzillaOptions = field(default_factory=BugzillaOptions)
 
     @staticmethod
     def echo(*args: Any, **kwargs: Any) -> None:

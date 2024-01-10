@@ -104,15 +104,14 @@ async def _outdated(options: Options) -> None:
             write_json_cache(json_data, options.cache_key)
 
     outdated_set = _collect_version_bumps(data.values(), options)
-    if len(outdated_set) == 0:
-        options.secho("Congrats! You have nothing to do!", fg="green")
-        return
-
     for bump in outdated_set:
         options.echo(bump.atom + " ", nl=False)
         options.secho(bump.old_version, fg="red", nl=False)
         options.echo(" → ", nl=False)
         options.secho(bump.new_version, fg="green")
+
+    if len(outdated_set) == 0:
+        options.secho("Congrats! You have nothing to do!", fg="green")
 
 
 @click.command()
