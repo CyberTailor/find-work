@@ -9,6 +9,7 @@ import click
 from click_aliases import ClickAliasedGroup
 
 import find_work.cli.bugzilla
+import find_work.cli.pgo
 import find_work.cli.repology
 from find_work.cli import Options
 from find_work.constants import VERSION
@@ -67,6 +68,14 @@ def bugzilla(options: Options, component: str | None, product: str | None,
         options.cache_key.feed(component=component)
 
 
+@cli.group(aliases=["p"], cls=ClickAliasedGroup)
+@click.pass_obj
+def pgo(options: Options) -> None:
+    """ Use Gentoo Packages website to find work. """
+
+    options.cache_key.feed("pgo")
+
+
 @cli.group(aliases=["rep", "r"], cls=ClickAliasedGroup)
 @click.option("-r", "--repo", metavar="NAME", required=True,
               help="Repository name on Repology.")
@@ -79,5 +88,7 @@ def repology(options: Options, repo: str) -> None:
 
 
 bugzilla.add_command(find_work.cli.bugzilla.outdated, aliases=["out", "o"])
+
+pgo.add_command(find_work.cli.pgo.outdated, aliases=["out", "o"])
 
 repology.add_command(find_work.cli.repology.outdated, aliases=["out", "o"])

@@ -11,6 +11,9 @@ Release Notes
 * **New:** Discover version bump requests on Bugzilla (command: ``bugzilla
   outdated``).
 
+* **New:** Discover outdated packages in the Gentoo repository (command: ``pgo
+  outdated``).
+
 * **New:** Filter results by maintainer.
 
 * Dependencies introduced:
