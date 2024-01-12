@@ -7,20 +7,6 @@ CLI subcommands for everything Bugzilla.
 
 This Python module also defines some regular expressions.
 
-``pkg_re`` matches package name and version from bug summaries:
-
->>> ant_match = pkg_re.search(">=dev-java/ant-1.10.14: version bump - needed for jdk:21")
->>> (ant_match.group("package"), ant_match.group("version"))
-('dev-java/ant', '1.10.14')
->>> libjxl_match = pkg_re.search("media-libs/libjxl: version bump")
->>> (libjxl_match.group("package"), libjxl_match.group("version"))
-('media-libs/libjxl', None)
->>> tricky_match = pkg_re.search("app-foo/bar-2-baz-4.0: version bump")
->>> (tricky_match.group("package"), tricky_match.group("version"))
-('app-foo/bar-2-baz', '4.0')
->>> pkg_re.search("Please bump Firefox") is None
-True
-
 ``isodate_re`` matches ISO 8601 time/date strings:
 
 >>> isodate_re.fullmatch("2024") is None
@@ -45,6 +31,7 @@ from find_work.cli import Message, Options, ProgressDots
 from find_work.constants import BUGZILLA_URL
 from find_work.types import BugView
 from find_work.utils import (
+    extract_package_name,
     requests_session,
     read_json_cache,
     write_json_cache,
@@ -55,21 +42,6 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     import bugzilla
     from bugzilla.bug import Bug
-
-# `category/package` matching according to PMS, and arbitrary version
-pkg_re = re.compile(r"""(?P<package>
-                            [\w][-+.\w]*    # category
-                            /               # single slash
-                            [\w][+\w]*      # package name before first '-'
-                            (-[+\w]*(?=-))* # rest of package name
-                        )
-                        (
-                            -               # single hyphen
-                            (?P<version>
-                                \d+[.\w]*   # arbitrary version
-                            )
-                        )?""",
-                    re.VERBOSE)
 
 isodate_re = re.compile(r"\d{4}\d{2}\d{2}T\d{2}:\d{2}:\d{2}")
 
@@ -126,9 +98,9 @@ def _collect_bugs(data: Iterable[Bug], options: Options) -> list[BugView]:
     result: list[BugView] = []
     for bug in data:
         if options.only_installed:
-            if (match := pkg_re.search(bug.summary)) is None:
+            if (package := extract_package_name(bug.summary)) is None:
                 continue
-            if match.group("package") not in pm.installed:
+            if package not in pm.installed:
                 continue
 
         date = time.strftime("%F", bug.last_change_time.timetuple())

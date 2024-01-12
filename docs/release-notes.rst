@@ -8,7 +8,8 @@ Release Notes
 0.4.0
 -----
 
-* **New:** List all bugs on Bugzilla (command: ``bugzilla list``)
+* **New:** List all bugs on Bugzilla (command: ``bugzilla list``).
+* Fix parsing atoms that contain revision.
 
 0.3.0
 -----
