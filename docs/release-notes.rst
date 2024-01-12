@@ -5,6 +5,11 @@
 Release Notes
 =============
 
+0.4.0
+-----
+
+* **New:** List all bugs on Bugzilla (command: ``bugzilla list``)
+
 0.3.0
 -----
 

@@ -102,14 +102,14 @@ def _bugs_to_json(data: Iterable[Bug]) -> list[dict]:
     return [bug.get_raw_data() for bug in data]
 
 
-def _fetch_bump_requests(options: Options) -> list[Bug]:
+def _fetch_bugs(options: Options, **kwargs: Any) -> list[Bug]:
     with requests_session() as session:
         bz = bugzilla.Bugzilla(BUGZILLA_URL, requests_session=session)
         query = bz.build_query(
             product=options.bugzilla.product or None,
             component=options.bugzilla.component or None,
             assigned_to=options.maintainer or None,
-            short_desc="version bump",
+            **kwargs,
         )
         query["resolution"] = "---"
         if options.bugzilla.chronological_sort:
@@ -119,8 +119,7 @@ def _fetch_bump_requests(options: Options) -> list[Bug]:
         return bz.query(query)
 
 
-def _collect_bump_requests(data: Iterable[Bug],
-                           options: Options) -> list[BugView]:
+def _collect_bugs(data: Iterable[Bug], options: Options) -> list[BugView]:
     if options.only_installed:
         pm = gentoopm.get_package_manager()
 
@@ -138,11 +137,8 @@ def _collect_bump_requests(data: Iterable[Bug],
     return result
 
 
-@click.command()
-@click.pass_obj
-def outdated(options: Options) -> None:
-    """ Find packages with version bump requests on Bugzilla. """
-    options.cache_key.feed("outdated")
+def _list_bugs(cmd: str, options: Options, **filters: Any) -> None:
+    options.cache_key.feed(cmd)
     dots = ProgressDots(options.verbose)
 
     options.say(Message.CACHE_LOAD)
@@ -156,7 +152,7 @@ def outdated(options: Options) -> None:
     else:
         options.vecho("Fetching data from Bugzilla API", nl=False, err=True)
         with dots():
-            data = _fetch_bump_requests(options)
+            data = _fetch_bugs(options, **filters)
         if len(data) == 0:
             options.say(Message.EMPTY_RESPONSE)
             return
@@ -165,8 +161,22 @@ def outdated(options: Options) -> None:
             json_data = _bugs_to_json(data)
             write_json_cache(json_data, options.cache_key, cls=BugEncoder)
 
-    bumps = _collect_bump_requests(data, options)
+    bumps = _collect_bugs(data, options)
     if len(bumps) != 0:
         options.echo(tabulate(bumps, tablefmt="plain"))  # type: ignore
     else:
         options.say(Message.NO_WORK)
+
+
+@click.command("list")
+@click.pass_obj
+def list_cmd(options: Options) -> None:
+    """ List bugs on Bugzilla. """
+    _list_bugs("list", options)
+
+
+@click.command()
+@click.pass_obj
+def outdated(options: Options) -> None:
+    """ Find packages with version bump requests on Bugzilla. """
+    _list_bugs("outdated", options, short_desc="version bump")
