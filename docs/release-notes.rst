@@ -5,10 +5,15 @@
 Release Notes
 =============
 
-0.4.0
+0.5.0
 -----
 
+* **New:** Execute custom aliases.
+
 * **New:** List all bugs on Bugzilla (command: ``bugzilla list``).
+
+* **Gone:** ``bugzilla outdated`` is now ``execute bump-requests``.
+
 * Fix parsing atoms that contain revision.
 
 0.3.0
@@ -36,9 +41,12 @@ Release Notes
 -----
 
 * Add progress indication with the option to disable it.
+
 * Support ``NO_COLOR`` variable in addition to ``NOCOLOR``.
+
 * [repology/outdated]: fix :bug:`2`, where different packages of the same
   projects crashed the utility.
+
 * [repology/outdated]: use ``origversion`` if defined to prevent crashes.
 
 0.1.1
