@@ -61,6 +61,15 @@ Adding a new module
 
 Feel free to copy/paste from existing sources, I do the same.
 
+Naming conventions
+------------------
+
+:py:class:`click.Group` name must be the same as the Python module that
+implements its commands.
+
+:py:class:`click.Command` wrapped function's name should be the same as its
+primary name. If that's not possible, use one of aliases instead.
+
 Code style
 ----------
 
