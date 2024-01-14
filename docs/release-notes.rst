@@ -5,7 +5,7 @@
 Release Notes
 =============
 
-0.5.0
+0.4.0
 -----
 
 * **New:** Execute custom aliases.
@@ -13,6 +13,8 @@ Release Notes
 * **New:** List all bugs on Bugzilla (command: ``bugzilla list``).
 
 * **Gone:** ``bugzilla outdated`` is now ``execute bump-requests``.
+
+* **Gone:** Python 3.10 support.
 
 * Fix parsing atoms that contain revision.
 
