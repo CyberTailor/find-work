@@ -2,7 +2,7 @@
 .\" SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
 .\" SPDX-License-Identifier: WTFPL
 .\" No warranty
-.Dd January 4, 2024
+.Dd January 14, 2024
 .Dt FIND-WORK 1
 .Os
 .Sh NAME
@@ -128,12 +128,20 @@ Some examples for Gentoo include:
 .Ql gentoo_ovl_science
 .El
 .El
-.
-.Ss Custom commands
 .Sh ENVIRONMENT
 .Bl -tag -width NO_COLOR
 .It Ev NO_COLOR
 If defined, disable all color output.
+.El
+.Sh FILES
+The
+.Nm
+utility reads the following configuration files, if found:
+.Bl -bullet -width 1n
+.It
+.Pa /etc/find-work/config.toml
+.It
+.Pa ~/.config/find-work/config.toml
 .El
 .Sh EXIT STATUS
 .Ex -std
@@ -142,5 +150,8 @@ Find outdated GURU packages installed on your system using Repology data:
 .Pp
 .Dl "$ find-work -I repology -r gentoo_ovl_guru outdated"
 .Sh AUTHORS
-.An Anna
-.Aq Mt cyber@sysrq.in
+.An -nosplit
+The
+.Nm find-work
+utility was written by
+.An Anna Aq Mt cyber@sysrq.in .

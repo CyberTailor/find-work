@@ -16,6 +16,11 @@ Release Notes
 
 * Fix parsing atoms that contain revision.
 
+* Dependencies introduced:
+
+  * :pypi:`deepmerge`
+  * :pypi:`platformdirs`
+
 0.3.0
 -----
 

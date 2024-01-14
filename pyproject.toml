@@ -19,7 +19,9 @@ dependencies = [
     "aiohttp<4,>=3",
     "click",
     "click-aliases",
+    "deepmerge",
     "gentoopm<2",
+    "platformdirs<5,>=4",
     "pydantic<3,>=2",
     "python-bugzilla",
     "repology-client<2,>=0.0.2",
@@ -94,6 +96,7 @@ module = [
     "bugzilla",
     "bugzilla.*",
     "click_aliases",
+    "deepmerge",
     "gentoopm",
     "gentoopm.*",
 ]

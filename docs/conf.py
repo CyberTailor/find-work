@@ -47,6 +47,7 @@ manpages_url = 'https://docs.sysrq.in/{path}'
 
 extlinks = {
     'bug': ('https://bugs.sysrq.in/show_bug.cgi?id=%s', 'bug #%s'),
+    'gitweb': (f'https://git.sysrq.in/{project}/tree/%s', '%s'),
     'pypi': ('https://pypi.org/project/%s/', '%s'),
 }
 intersphinx_mapping = {

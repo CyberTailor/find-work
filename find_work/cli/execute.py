@@ -8,15 +8,19 @@ import tomllib
 from collections.abc import Callable
 from importlib import import_module
 from importlib.resources import files
+from pathlib import Path
 from typing import Any
 
 import click
+import gentoopm
 from click_aliases import ClickAliasedGroup
+from deepmerge import always_merger
+from platformdirs import PlatformDirs
 
 import find_work.data
 from find_work.cli import Options
 from find_work.config import Config, ConfigAlias, ConfigModuleOption
-from find_work.constants import DEFAULT_CONFIG
+from find_work.constants import DEFAULT_CONFIG, ENTITY, PACKAGE
 from find_work.types import CliOptionKind
 
 
@@ -74,6 +78,18 @@ def load_aliases(group: ClickAliasedGroup) -> None:
 
     default_config = files(find_work.data).joinpath(DEFAULT_CONFIG).read_text()
     toml = tomllib.loads(default_config)
+
+    pm = gentoopm.get_package_manager()
+    system_config = Path(pm.root) / "etc" / PACKAGE / "config.toml"
+    if system_config.is_file():
+        with open(system_config, "rb") as file:
+            always_merger.merge(toml, tomllib.load(file))
+
+    dirs = PlatformDirs(PACKAGE, ENTITY, roaming=True)
+    user_config = dirs.user_config_path / "config.toml"
+    if user_config.is_file():
+        with open(user_config, "rb") as file:
+            always_merger.merge(toml, tomllib.load(file))
 
     config = Config(toml)
     for alias in config.aliases:
