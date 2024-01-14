@@ -16,13 +16,13 @@ from pydantic import RootModel
 from repology_client.types import Package
 from sortedcontainers import SortedSet
 
-from find_work.cli import Message, Options, ProgressDots
-from find_work.types import VersionBump
-from find_work.utils import (
-    aiohttp_session,
+from find_work.cache import (
     read_json_cache,
     write_json_cache,
 )
+from find_work.cli import Message, Options, ProgressDots
+from find_work.types import VersionBump
+from find_work.utils import aiohttp_session
 
 
 async def _fetch_outdated(options: Options) -> dict[str, set[Package]]:

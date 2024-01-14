@@ -12,14 +12,14 @@ import gentoopm
 from sortedcontainers import SortedDict, SortedSet
 from tabulate import tabulate
 
-from find_work.cli import Message, Options, ProgressDots
-from find_work.constants import PGO_BASE_URL, PGO_API_URL
-from find_work.types import VersionBump
-from find_work.utils import (
-    aiohttp_session,
+from find_work.cache import (
     read_json_cache,
     write_json_cache,
 )
+from find_work.cli import Message, Options, ProgressDots
+from find_work.constants import PGO_BASE_URL, PGO_API_URL
+from find_work.types import VersionBump
+from find_work.utils import aiohttp_session
 
 
 async def _fetch_outdated() -> list[dict]:

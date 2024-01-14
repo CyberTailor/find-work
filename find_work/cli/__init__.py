@@ -2,19 +2,21 @@
 # SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
 # No warranty
 
-""" Modules implementing command-line functionality. """
+""" Basic command-line functionality. """
 
 import threading
+from abc import ABC, abstractmethod
 from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import field
+from functools import cached_property
 from enum import Enum, auto
 from typing import Any
 
 import click
 from pydantic.dataclasses import dataclass
 
-from find_work.types import CacheKey
+from find_work.cache import CacheKey
 
 
 class ProgressDots:
@@ -52,16 +54,39 @@ class ProgressDots:
             self._stop()
 
 
+class OptionsBase(ABC):
+    """ Base class for all options. """
+
+    def __getitem__(self, key: str) -> Any:
+        return getattr(self, key)
+
+    def __setitem__(self, key: str, value: Any) -> None:
+        setattr(self, key, value)
+
+
+class ModuleOptionsBase(OptionsBase, ABC):
+    """ Base class for module-specific options. """
+
+    @property
+    @abstractmethod
+    def cache_order(self) -> list[str]:
+        ...
+
+
 @dataclass
-class RepologyOptions:
+class RepologyOptions(ModuleOptionsBase):
     """ Repology subcommand options. """
 
     # Repository name.
     repo: str = ""
 
+    @cached_property
+    def cache_order(self) -> list[str]:
+        return ["repo"]
+
 
 @dataclass
-class BugzillaOptions:
+class BugzillaOptions(ModuleOptionsBase):
     """ Bugzilla subcommand options. """
 
     # Product name.
@@ -70,8 +95,15 @@ class BugzillaOptions:
     # Component name.
     component: str = ""
 
+    # Bug summary.
+    short_desc: str = ""
+
     # Sort by date last modified or by ID.
     chronological_sort: bool = False
+
+    @cached_property
+    def cache_order(self) -> list[str]:
+        return ["chronological_sort", "short_desc", "product", "component"]
 
 
 class Message(Enum):
@@ -85,7 +117,7 @@ class Message(Enum):
 
 
 @dataclass
-class Options:
+class Options(OptionsBase):
     """ Global options. """
 
     # Enable/disable colors.
@@ -112,12 +144,14 @@ class Options:
         """
         Simple alias to :py:function:`click.echo`.
         """
+
         click.echo(*args, **kwargs)
 
     def vecho(self, *args: Any, **kwargs: Any) -> None:
         """
         Alias to :py:function:`click.echo` but with our verbosity settings.
         """
+
         if self.verbose:
             click.echo(*args, **kwargs)
 
@@ -125,6 +159,7 @@ class Options:
         """
         Alias to :py:function:`click.secho` but with our color settings.
         """
+
         kwargs.pop("color", None)
         click.secho(*args, color=self.colors, **kwargs)  # type: ignore
 
@@ -134,6 +169,7 @@ class Options:
 
         :param msgid: message type
         """
+
         match msgid:
             case Message.CACHE_LOAD:
                 self.vecho("Checking for cached data", nl=False, err=True)

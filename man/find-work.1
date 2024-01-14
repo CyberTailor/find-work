@@ -17,6 +17,7 @@
 .Ar module
 .Op Ar arg ...
 .Ar command
+.Op Ar arg ...
 .Sh DESCRIPTION
 .Nm
 is a fun little tool that lets you discover what you can do for Gentoo as a package mantainer.
@@ -74,6 +75,10 @@ Product name on Bugzilla.
 Sort by time last modified (most recently modified first).
 .El
 .
+.It Cm execute
+.Dl Pq alias: Cm exec , Cm e
+This module executes custom commands.
+.
 .It Cm pgo Ar command
 .Dl Pq alias: Cm p
 .Pp
@@ -123,6 +128,8 @@ Some examples for Gentoo include:
 .Ql gentoo_ovl_science
 .El
 .El
+.
+.Ss Custom commands
 .Sh ENVIRONMENT
 .Bl -tag -width NO_COLOR
 .It Ev NO_COLOR

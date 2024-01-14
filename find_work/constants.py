@@ -24,3 +24,6 @@ PGO_BASE_URL = "https://packages.gentoo.org"
 
 # Gentoo Packages API location.
 PGO_API_URL = f"{PGO_BASE_URL}/api/graphql/"
+
+# Default config file name
+DEFAULT_CONFIG = "default_config.toml"

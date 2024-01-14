@@ -27,14 +27,16 @@ import click
 import gentoopm
 from tabulate import tabulate
 
+from find_work.cache import (
+    read_json_cache,
+    write_json_cache,
+)
 from find_work.cli import Message, Options, ProgressDots
 from find_work.constants import BUGZILLA_URL
 from find_work.types import BugView
 from find_work.utils import (
     extract_package_name,
     requests_session,
-    read_json_cache,
-    write_json_cache,
 )
 
 with warnings.catch_warnings():
@@ -78,10 +80,10 @@ def _fetch_bugs(options: Options, **kwargs: Any) -> list[Bug]:
     with requests_session() as session:
         bz = bugzilla.Bugzilla(BUGZILLA_URL, requests_session=session)
         query = bz.build_query(
+            short_desc=options.bugzilla.short_desc or None,
             product=options.bugzilla.product or None,
             component=options.bugzilla.component or None,
             assigned_to=options.maintainer or None,
-            **kwargs,
         )
         query["resolution"] = "---"
         if options.bugzilla.chronological_sort:
@@ -142,13 +144,6 @@ def _list_bugs(cmd: str, options: Options, **filters: Any) -> None:
 
 @click.command("list")
 @click.pass_obj
-def list_cmd(options: Options) -> None:
+def ls(options: Options) -> None:
     """ List bugs on Bugzilla. """
     _list_bugs("list", options)
-
-
-@click.command()
-@click.pass_obj
-def outdated(options: Options) -> None:
-    """ Find packages with version bump requests on Bugzilla. """
-    _list_bugs("outdated", options, short_desc="version bump")

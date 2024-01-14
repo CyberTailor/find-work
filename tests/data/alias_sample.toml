@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: WTFPL
+# SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
+# No warranty
+
+[alias.sample]
+command = "find_work.cli.sample.sample"
+description = "Sample alias."
+shortcuts = ["smpl"]
+options.sample.simple = "value"
+options.sample.option = {"option" = ["-o", "--option"]}
+options.sample.flag = {"flag" = ["-f", "--flag"]}

@@ -5,7 +5,7 @@
 import tempfile
 from pathlib import Path
 
-from find_work.utils import _get_cache_path
+from find_work.cache import _get_cache_path
 
 
 def test_get_cache_path(monkeypatch):
