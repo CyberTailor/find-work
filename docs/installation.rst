@@ -30,7 +30,7 @@ Manual installation
 
 .. prompt:: bash
 
-   pip install gentle-mxml --user
+   pip install find-work --user
 
 To install manual pages and shell completions, run:
 
