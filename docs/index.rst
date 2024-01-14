@@ -7,7 +7,7 @@ Introduction
 ============
 
 find-work is a fun little tool that lets you discover what you can do for Gentoo
-as a package mantainer. It contains filters to show only packages you might be
+as a package maintainer. It contains filters to show only packages you might be
 interested in.
 
 The following data sources are supported:
