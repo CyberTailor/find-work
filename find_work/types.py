@@ -2,7 +2,9 @@
 # SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
 # No warranty
 
-""" Type definitions for the application, implemented as Pydantic models. """
+"""
+Type definitions for the application, implemented (mostly) as Pydantic models.
+"""
 
 from dataclasses import field
 from enum import Enum, auto

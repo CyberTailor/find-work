@@ -71,7 +71,7 @@ class CacheKey:
             case _:
                 raise cls._unsupported_type(value)
 
-    def feed(self, *args: Any, **kwargs: Any) -> bool:
+    def feed(self, *args: Any) -> bool:
         """
         Update the key with new data.
 

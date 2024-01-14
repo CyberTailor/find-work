@@ -5,6 +5,17 @@
 Release Notes
 =============
 
+0.5.0
+-----
+
+* **New:** Scan repository for QA issues (command: ``pkgcheck scan``).
+
+* Fix caching with maintainer filter applied.
+
+* Dependencies introduced:
+
+  * :pypi:`pkgcheck`
+
 0.4.0
 -----
 

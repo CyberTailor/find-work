@@ -17,7 +17,6 @@
 .Ar module
 .Op Ar arg ...
 .Ar command
-.Op Ar arg ...
 .Sh DESCRIPTION
 .Nm
 is a fun little tool that lets you discover what you can do for Gentoo as a package mantainer.
@@ -45,7 +44,7 @@ are as follows:
 .Bl -tag -width repology
 .It Xo
 .Cm bugzilla
-.Ol Fl t
+.Op Fl t
 .Op Fl c Ar name
 .Op Fl p Ar name
 .Ar command
@@ -58,9 +57,7 @@ This module uses Gentoo Bugzilla to find work.
 can be one of the following:
 .Bl -tag -width Ds
 .It Ic list Pq alias: Ic ls , Ic l
-Find all open bugs.
-.It Ic outdated Pq alias: Ic out , Ic o
-Find open version bump requests.
+List all open bugs.
 .El
 .Pp
 The options for
@@ -75,7 +72,7 @@ Product name on Bugzilla.
 Sort by time last modified (most recently modified first).
 .El
 .
-.It Cm execute
+.It Cm execute Ar command
 .Dl Pq alias: Cm exec , Cm e
 This module executes custom commands.
 .
@@ -91,6 +88,29 @@ can be one of the following:
 Find outdated packages.
 .It Ic stabilization Pq alias: Ic stab , Ic s
 Find stabilization candidates.
+.El
+.
+.It Xo
+.Cm pkgcheck
+.Fl r Ar repo
+.Ar command
+.Xc
+.Dl Pq alias: Cm chk , Cm c
+.Pp
+.Ar command
+can be one of the following:
+.Bl -tag -width Ds
+.It Ic scan Pq alias: Ic s
+Scan a repository for QA issues.
+Results with scopes outside of package level are ignored.
+.El
+.Pp
+The options for
+.Cm find-work pkgcheck
+are as follows:
+.Bl -tag -width Ds
+.It Fl r Ar repo , Fl -repo Ar repo
+Repository name or absolute path.
 .El
 .
 .It Xo
@@ -126,6 +146,7 @@ Some examples for Gentoo include:
 .Ql gentoo_ovl_pentoo
 .It
 .Ql gentoo_ovl_science
+.El
 .El
 .El
 .Sh ENVIRONMENT

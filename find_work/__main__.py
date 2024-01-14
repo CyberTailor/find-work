@@ -11,6 +11,7 @@ from click_aliases import ClickAliasedGroup
 import find_work.cli.bugzilla
 import find_work.cli.execute
 import find_work.cli.pgo
+import find_work.cli.pkgcheck
 import find_work.cli.repology
 from find_work.cli import Options
 from find_work.constants import VERSION
@@ -41,7 +42,7 @@ def cli(ctx: click.Context, maintainer: str | None,
     options.cache_key.feed(date.today().toordinal())
     if maintainer:
         options.maintainer = maintainer
-        options.cache_key.feed(maintainer=maintainer)
+        options.cache_key.feed_option("maintainer", maintainer)
 
 
 @cli.group(aliases=["bug", "b"], cls=ClickAliasedGroup)
@@ -69,12 +70,32 @@ def bugzilla(options: Options, component: str | None, product: str | None,
         options.cache_key.feed_option(key, options.bugzilla[key])
 
 
+@cli.group(aliases=["exec", "e"], cls=ClickAliasedGroup)
+def execute() -> None:
+    """ Execute a custom command. """
+
+
 @cli.group(aliases=["p"], cls=ClickAliasedGroup)
 @click.pass_obj
 def pgo(options: Options) -> None:
     """ Use Gentoo Packages website to find work. """
 
     options.cache_key.feed("pgo")
+
+
+@cli.group(aliases=["chk", "c"], cls=ClickAliasedGroup)
+@click.option("-r", "--repo", metavar="REPO", required=True,
+              help="Repository name or absolute path.")
+@click.pass_obj
+def pkgcheck(options: Options, repo: str) -> None:
+    """ Use pkgcheck to find work. """
+
+    options.cache_key.feed("pkgcheck")
+
+    options.pkgcheck.repo = repo
+
+    for key in options.pkgcheck.cache_order:
+        options.cache_key.feed_option(key, options.pkgcheck[key])
 
 
 @cli.group(aliases=["rep", "r"], cls=ClickAliasedGroup)
@@ -92,15 +113,12 @@ def repology(options: Options, repo: str) -> None:
         options.cache_key.feed_option(key, options.repology[key])
 
 
-@cli.group(aliases=["exec", "e"], cls=ClickAliasedGroup)
-def execute() -> None:
-    """ Execute a custom command. """
-
-
 bugzilla.add_command(find_work.cli.bugzilla.ls, aliases=["ls", "l"])
 
 pgo.add_command(find_work.cli.pgo.outdated, aliases=["out", "o"])
 pgo.add_command(find_work.cli.pgo.stabilization, aliases=["stab", "s"])
+
+pkgcheck.add_command(find_work.cli.pkgcheck.scan, aliases=["s"])
 
 repology.add_command(find_work.cli.repology.outdated, aliases=["out", "o"])
 

@@ -21,6 +21,7 @@ dependencies = [
     "click-aliases",
     "deepmerge",
     "gentoopm<2",
+    "pkgcheck",
     "platformdirs<5,>=4",
     "pydantic<3,>=2",
     "python-bugzilla",
@@ -99,5 +100,6 @@ module = [
     "deepmerge",
     "gentoopm",
     "gentoopm.*",
+    "pkgcheck",
 ]
 ignore_missing_imports = true

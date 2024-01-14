@@ -74,18 +74,6 @@ class ModuleOptionsBase(OptionsBase, ABC):
 
 
 @dataclass
-class RepologyOptions(ModuleOptionsBase):
-    """ Repology subcommand options. """
-
-    # Repository name.
-    repo: str = ""
-
-    @cached_property
-    def cache_order(self) -> list[str]:
-        return ["repo"]
-
-
-@dataclass
 class BugzillaOptions(ModuleOptionsBase):
     """ Bugzilla subcommand options. """
 
@@ -106,8 +94,33 @@ class BugzillaOptions(ModuleOptionsBase):
         return ["chronological_sort", "short_desc", "product", "component"]
 
 
+@dataclass
+class PkgcheckOptions(ModuleOptionsBase):
+    """ pkgcheck subcommand options. """
+
+    # Repository name or absolute path.
+    repo: str = ""
+
+    @cached_property
+    def cache_order(self) -> list[str]:
+        return ["repo"]
+
+
+@dataclass
+class RepologyOptions(ModuleOptionsBase):
+    """ Repology subcommand options. """
+
+    # Repository name.
+    repo: str = ""
+
+    @cached_property
+    def cache_order(self) -> list[str]:
+        return ["repo"]
+
+
 class Message(Enum):
     """ Typical messages. """
+
     CACHE_READ = auto()
     CACHE_LOAD = auto()
     CACHE_WRITE = auto()
@@ -136,8 +149,9 @@ class Options(OptionsBase):
     cache_key: CacheKey = field(default_factory=CacheKey)
 
     # Subcommand options.
-    repology: RepologyOptions = field(default_factory=RepologyOptions)
     bugzilla: BugzillaOptions = field(default_factory=BugzillaOptions)
+    pkgcheck: PkgcheckOptions = field(default_factory=PkgcheckOptions)
+    repology: RepologyOptions = field(default_factory=RepologyOptions)
 
     @staticmethod
     def echo(*args: Any, **kwargs: Any) -> None:
