@@ -2,6 +2,7 @@
 # SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
 # No warranty
 
+import logging
 import os
 from datetime import date
 
@@ -43,6 +44,10 @@ def cli(ctx: click.Context, maintainer: str | None,
     if maintainer:
         options.maintainer = maintainer
         options.cache_key.feed_option("maintainer", maintainer)
+
+    # silence pkgcore
+    pkgcore_logger = logging.getLogger("pkgcore")
+    pkgcore_logger.setLevel(logging.CRITICAL)
 
 
 @cli.group(aliases=["bug", "b"], cls=ClickAliasedGroup)
