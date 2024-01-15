@@ -30,6 +30,3 @@ PGO_BASE_URL = "https://packages.gentoo.org"
 
 # Gentoo Packages API location.
 PGO_API_URL = f"{PGO_BASE_URL}/api/graphql/"
-
-# Scope level for `pkgcheck.base.package_scope`.
-PKGCHECK_MIN_PACKAGE_SCOPE = 3

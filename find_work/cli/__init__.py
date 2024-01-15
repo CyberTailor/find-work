@@ -101,9 +101,15 @@ class PkgcheckOptions(ModuleOptionsBase):
     # Repository name or absolute path.
     repo: str = ""
 
+    # Class of the pkgcheck warning, e.g. DeprecatedEapi
+    keywords: list[str] = field(default_factory=list)
+
+    # Message of the pkgcheck warning, e.g. 'uses deprecated EAPI 5'
+    message: str = ""
+
     @cached_property
     def cache_order(self) -> list[str]:
-        return ["repo"]
+        return ["repo", "keywords", "message"]
 
 
 @dataclass

@@ -93,6 +93,8 @@ Find stabilization candidates.
 .It Xo
 .Cm pkgcheck
 .Fl r Ar repo
+.Op Fl M Ar text
+.Op Fl k Ar keyword
 .Ar command
 .Xc
 .Dl Pq alias: Cm chk , Cm c
@@ -109,8 +111,14 @@ The options for
 .Cm find-work pkgcheck
 are as follows:
 .Bl -tag -width Ds
+.It Fl M Ar text , Fl -message Ar text
+Message of the pkgcheck warning, e.g.
+.Qq uses deprecated EAPI 5 .
+.It Fl k Ar keyword , Fl -keywords Ar keyword
+Comma-separated list of pkgcheck keywords, e.g. DeprecatedEapi.
 .It Fl r Ar repo , Fl -repo Ar repo
 Repository name or absolute path.
+This option is required.
 .El
 .
 .It Xo
@@ -139,13 +147,13 @@ This option is required.
 Some examples for Gentoo include:
 .Bl -bullet -compact -width 1n
 .It
-.Ql gentoo
+.Qq gentoo
 .It
-.Ql gentoo_ovl_guru
+.Qq gentoo_ovl_guru
 .It
-.Ql gentoo_ovl_pentoo
+.Qq gentoo_ovl_pentoo
 .It
-.Ql gentoo_ovl_science
+.Qq gentoo_ovl_science
 .El
 .El
 .El

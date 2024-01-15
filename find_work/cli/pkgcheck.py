@@ -10,7 +10,6 @@ import pkgcheck
 from sortedcontainers import SortedDict, SortedSet
 
 from find_work.cli import Message, Options, ProgressDots
-from find_work.constants import PKGCHECK_MIN_PACKAGE_SCOPE
 
 
 def _do_scan(options: Options) -> SortedDict[str, SortedSet]:
@@ -20,12 +19,16 @@ def _do_scan(options: Options) -> SortedDict[str, SortedSet]:
             repo_obj = pm.repositories[options.pkgcheck.repo]
 
     cli_opts = [
-        "-r", options.pkgcheck.repo,
-        "-f", "latest",  # TODO: become version-aware
+        "--repo", options.pkgcheck.repo,
+        "--scope", "pkg,ver",
+        "--filter", "latest",  # TODO: become version-aware
     ]
+    if options.pkgcheck.keywords:
+        cli_opts += ["--keywords", ",".join(options.pkgcheck.keywords)]
+
     data: SortedDict[str, SortedSet] = SortedDict()
     for result in pkgcheck.scan(cli_opts):
-        if result.scope.level < PKGCHECK_MIN_PACKAGE_SCOPE:
+        if options.pkgcheck.message not in result.desc:
             continue
 
         package = "/".join([result.category, result.package])

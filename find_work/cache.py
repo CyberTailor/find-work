@@ -31,12 +31,14 @@ class CacheKey:
     True
     >>> key.feed_option("flag", True)
     True
+    >>> key.feed_option("keywords", ["wow", "amazing"])
+    True
     >>> bytes(key)
-    b'bytes\\x00string\\x00count:42\\x00flag:1\\x00'
-    >>> key.feed([1, 2, 3])
+    b'bytes\\x00string\\x00count:42\\x00flag:1\\x00keywords:amazing\\x19wow\\x00'
+    >>> key.feed({1, 2, 3})
     Traceback (most recent call last):
         ...
-    TypeError: Unsupported type: list
+    TypeError: Unsupported type: set
     """
 
     data: bytes = b""
@@ -52,6 +54,8 @@ class CacheKey:
                 return value
             case str():
                 return value.encode()
+            case list():
+                return b"\31".join(map(cls._encode, sorted(value)))
             case bool():
                 return b"1" if value else b"0"
             case int():
@@ -62,7 +66,7 @@ class CacheKey:
     @classmethod
     def _feedable(cls, value: Any) -> bool:
         match value:
-            case bytes() | str():
+            case bytes() | str() | list():
                 return bool(value)
             case bool() | int():
                 return True

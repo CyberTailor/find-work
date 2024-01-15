@@ -84,15 +84,22 @@ def pgo(options: Options) -> None:
 
 
 @cli.group(aliases=["chk", "c"], cls=ClickAliasedGroup)
+@click.option("-M", "--message", metavar="LIST",
+              help="Warning message to search for.")
+@click.option("-k", "--keywords", metavar="LIST",
+              help="Keywords to scan for.")
 @click.option("-r", "--repo", metavar="REPO", required=True,
               help="Repository name or absolute path.")
 @click.pass_obj
-def pkgcheck(options: Options, repo: str) -> None:
+def pkgcheck(options: Options, message: str | None, keywords: str | None,
+             repo: str) -> None:
     """ Use pkgcheck to find work. """
 
     options.cache_key.feed("pkgcheck")
 
     options.pkgcheck.repo = repo
+    options.pkgcheck.keywords = (keywords or "").split(",")
+    options.pkgcheck.message = message or ""
 
     for key in options.pkgcheck.cache_order:
         options.cache_key.feed_option(key, options.pkgcheck[key])

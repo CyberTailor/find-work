@@ -5,6 +5,11 @@
 Release Notes
 =============
 
+0.6.0
+-----
+
+* **New:** Filter ``pkgcheck`` results by keyword or message.
+
 0.5.0
 -----
 
