@@ -19,6 +19,7 @@ def _do_scan(options: Options) -> SortedDict[str, SortedSet]:
             repo_obj = pm.repositories[options.pkgcheck.repo]
 
     cli_opts = [
+        "--quiet",
         "--repo", options.pkgcheck.repo,
         "--scope", "pkg,ver",
         "--filter", "latest",  # TODO: become version-aware

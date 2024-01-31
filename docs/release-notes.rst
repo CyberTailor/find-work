@@ -10,6 +10,8 @@ Release Notes
 
 * **New:** Filter ``pkgcheck`` results by keyword or message.
 
+* Silence pkgcore warnings and pkgcheck status messages.
+
 0.5.0
 -----
 
