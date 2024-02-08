@@ -2,6 +2,17 @@
 # SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
 # No warranty
 
+
+# Global Flags
+
+[flag.orphaned]
+description = "Only match orphaned (maintainer-needed) packages."
+shortcuts = ["-O"]
+params.maintainer = "maintainer-needed@gentoo.org"
+
+
+# Command Aliases
+
 [alias.bump-requests]
 command = "find_work.cli.bugzilla.ls"
 description = "Find packages with version bump requests on Bugzilla."

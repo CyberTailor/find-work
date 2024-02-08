@@ -15,6 +15,7 @@ Table of Contents
 
    installation
    getting-started
+   configuration
    contributing
    release-notes
 

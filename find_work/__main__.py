@@ -5,6 +5,7 @@
 import logging
 import os
 from datetime import date
+from typing import Any
 
 import click
 from click_aliases import ClickAliasedGroup
@@ -14,7 +15,8 @@ import find_work.cli.execute
 import find_work.cli.pgo
 import find_work.cli.pkgcheck
 import find_work.cli.repology
-from find_work.cli import Options
+from find_work.cli import Options, apply_custom_flags
+from find_work.config import load_config
 from find_work.constants import VERSION
 
 
@@ -28,22 +30,28 @@ from find_work.constants import VERSION
               help="Only match installed packages.")
 @click.version_option(VERSION, "-V", "--version")
 @click.pass_context
-def cli(ctx: click.Context, maintainer: str | None,
-        quiet: bool, installed: bool) -> None:
+@apply_custom_flags
+def cli(ctx: click.Context, **kwargs: Any) -> None:
     """ Personal advice utility for Gentoo package maintainers. """
+
+    # Process custom global flags
+    for flag in load_config().flags:
+        if ctx.params[flag.name]:
+            for opt, val in flag.params.items():
+                ctx.params[opt] = val
 
     ctx.ensure_object(Options)
     options: Options = ctx.obj
 
-    options.verbose = not quiet
-    options.only_installed = installed
+    options.verbose = not ctx.params["quiet"]
+    options.only_installed = ctx.params["installed"]
     if any(var in os.environ for var in ["NOCOLOR", "NO_COLOR"]):
         options.colors = False
 
     options.cache_key.feed(date.today().toordinal())
-    if maintainer:
-        options.maintainer = maintainer
-        options.cache_key.feed_option("maintainer", maintainer)
+    if ctx.params["maintainer"]:
+        options.maintainer = ctx.params["maintainer"]
+        options.cache_key.feed_option("maintainer", options.maintainer)
 
     # silence pkgcore
     pkgcore_logger = logging.getLogger("pkgcore")

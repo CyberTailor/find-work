@@ -6,7 +6,7 @@
 
 import threading
 from abc import ABC, abstractmethod
-from collections.abc import Generator
+from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from dataclasses import field
 from functools import cached_property
@@ -17,6 +17,7 @@ import click
 from pydantic.dataclasses import dataclass
 
 from find_work.cache import CacheKey
+from find_work.config import load_config
 
 
 class ProgressDots:
@@ -204,3 +205,15 @@ class Options(OptionsBase):
                 self.secho("Congrats! You have nothing to do!", fg="green")
             case _:
                 raise TypeError(f"Unknown message identifier: {msgid}")
+
+
+def apply_custom_flags(callback: Callable) -> Callable:
+    """
+    A decorator function to load custom global flags from configuration files.
+    """
+
+    for flag in load_config().flags:
+        names = [f"--{flag.name}"]
+        names += flag.shortcuts
+        callback = click.option(*names, help=flag.description, is_flag=True)(callback)
+    return callback

@@ -101,5 +101,7 @@ module = [
     "gentoopm",
     "gentoopm.*",
     "pkgcheck",
+    # indirect deps
+    "argcomplete",
 ]
 ignore_missing_imports = true

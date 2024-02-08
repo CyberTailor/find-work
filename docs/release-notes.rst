@@ -8,6 +8,8 @@ Release Notes
 0.6.0
 -----
 
+* **New:** Define custom global flags to override global options.
+
 * **New:** Filter ``pkgcheck`` results by keyword or message.
 
 * Silence pkgcore warnings and pkgcheck status messages.

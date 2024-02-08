@@ -51,3 +51,27 @@ def test_alias_sample():
     assert flag_opt[0].module == "sample"
     assert flag_opt[0].kind == CliOptionKind.FLAG
     assert flag_opt[0].value == ["-f", "--flag"]
+
+
+def test_flag_empty():
+    assert not Config({}).flags
+
+
+def test_flag_type_error():
+    with pytest.raises(TypeError):
+        Config({"flag": "hello"}).flags
+
+
+def test_flag_sample():
+    path = Path(__file__).parent / "data" / "flag_sample.toml"
+    with open(path, "rb") as file:
+        toml = tomllib.load(file)
+    config = Config(toml)
+
+    assert len(config.flags) == 1
+    flag = config.flags.pop()
+
+    assert flag.name == "sample"
+    assert flag.description == "Sample global flag."
+    assert flag.shortcuts == ["-s"]
+    assert flag.params == {"key1": "val1", "key2": "val2"}
