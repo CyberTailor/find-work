@@ -8,7 +8,7 @@
 PACKAGE = "find-work"
 
 # Application version.
-VERSION = "0.6.0"
+VERSION = "0.6.1"
 
 # Application homepage.
 HOMEPAGE = "https://find-work.sysrq.in"
