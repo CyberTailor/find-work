@@ -5,6 +5,13 @@
 Release Notes
 =============
 
+0.6.1
+-----
+
+* [pkgcheck/scan]: drop ``--quiet`` flag. Before pkgcheck v0.10.21, this option
+  was used only in pkgcore internals. Now it's used to filter out non-error
+  results from pkgcheck.
+
 0.6.0
 -----
 
