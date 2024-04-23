@@ -8,7 +8,7 @@ Release Notes
 0.6.2
 -----
 
-Modules changelog:
+*Modules changelog:*
 
 * **pgo**:
 
@@ -19,19 +19,28 @@ Modules changelog:
 0.6.1
 -----
 
+*Modules changelog:*
 
-* [pkgcheck/scan]: drop ``--quiet`` flag. Before pkgcheck v0.10.21, this option
-  was used only in pkgcore internals. Now it's used to filter out non-error
-  results from pkgcheck.
+* **pkgcheck**:
+
+  * **scan**:
+
+    * Drop ``--quiet`` flag. Before pkgcheck v0.10.21, this option was used
+      only in pkgcore internals. Now it's used to filter out non-error results
+      from pkgcheck.
 
 0.6.0
 -----
 
 * **New:** Define custom global flags to override global options.
 
-* **New:** Filter ``pkgcheck`` results by keyword or message.
+*Modules changelog:*
 
-* Silence pkgcore warnings and pkgcheck status messages.
+* **pkgcheck**:
+
+  * **New:** Filter results by keyword or message.
+
+  * Silence pkgcore warnings and pkgcheck status messages.
 
 0.5.0
 -----
@@ -40,9 +49,9 @@ Modules changelog:
 
 * Fix caching with maintainer filter applied.
 
-* Dependencies introduced:
+*Dependencies introduced:*
 
-  * :pypi:`pkgcheck`
+* :pypi:`pkgcheck`
 
 0.4.0
 -----
@@ -57,10 +66,10 @@ Modules changelog:
 
 * Fix parsing atoms that contain revision.
 
-* Dependencies introduced:
+*Dependencies introduced:*
 
-  * :pypi:`deepmerge`
-  * :pypi:`platformdirs`
+* :pypi:`deepmerge`
+* :pypi:`platformdirs`
 
 0.3.0
 -----
@@ -76,12 +85,12 @@ Modules changelog:
 
 * **New:** Filter results by maintainer.
 
-* Dependencies introduced:
+*Dependencies introduced:*
 
-  * :pypi:`python-bugzilla`
-  * :pypi:`requests`
-  * :pypi:`tabulate`
-  * :pypi:`pytest-recording` *(test)*
+* :pypi:`python-bugzilla`
+* :pypi:`requests`
+* :pypi:`tabulate`
+* :pypi:`pytest-recording` *(test)*
 
 0.2.0
 -----
@@ -90,15 +99,27 @@ Modules changelog:
 
 * Support ``NO_COLOR`` variable in addition to ``NOCOLOR``.
 
-* [repology/outdated]: fix :bug:`2`, where different packages of the same
-  projects crashed the utility.
+*Modules changelog:*
 
-* [repology/outdated]: use ``origversion`` if defined to prevent crashes.
+* **repology**:
+
+  * **outdated**:
+
+    * Fix :bug:`2`, where different packages of the same project crashed the
+      utility.
+
+    * Use ``origversion`` if defined to prevent crashes.
 
 0.1.1
 -----
 
-* [repology/outdated]: print latest of packaged version instead of a random one.
+*Modules changelog:*
+
+* **repology**:
+
+  * **outdated**:
+
+    * Output the latest of packaged versions instead of a choosing a random one.
 
 0.1.0
 -----
