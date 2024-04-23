@@ -18,7 +18,7 @@ from find_work.cache import (
 )
 from find_work.cli import Message, Options, ProgressDots
 from find_work.constants import PGO_BASE_URL, PGO_API_URL
-from find_work.types import VersionBump
+from find_work.types import VersionBump, VersionPart
 from find_work.utils import aiohttp_session
 
 
@@ -61,6 +61,9 @@ async def _outdated(options: Options) -> None:
             "Filtering by maintainer is not implemented for this command"
         )
 
+    if (extra_options := options.pgo.extra_options) is not None:
+        version_part: VersionPart | None = extra_options.get("version_part")
+
     dots = ProgressDots(options.verbose)
 
     options.say(Message.CACHE_LOAD)
@@ -78,14 +81,18 @@ async def _outdated(options: Options) -> None:
         with dots():
             write_json_cache(data, options.cache_key)
 
-    outdated_set = _collect_version_bumps(data, options)
-    for bump in outdated_set:
+    no_work = True
+    for bump in _collect_version_bumps(data, options):
+        if version_part and not bump.changed(version_part):
+            continue
+
         options.echo(bump.atom + " ", nl=False)
         options.secho(bump.old_version, fg="red", nl=False)
         options.echo(" → ", nl=False)
         options.secho(bump.new_version, fg="green")
+        no_work = False
 
-    if len(outdated_set) == 0:
+    if no_work:
         options.say(Message.NO_WORK)
 
 
@@ -168,10 +175,18 @@ async def _stabilization(options: Options) -> None:
 
 
 @click.command()
+@click.option("-F", "--filter", "version_part",
+              type=click.Choice(["major", "minor", "patch"]),
+              help="Version part filter.")
 @click.pass_obj
-def outdated(options: Options) -> None:
-    """ Find outdated packages. """
+def outdated(options: Options, version_part: VersionPart | None = None) -> None:
+    """
+    Find outdated packages.
+    """
+
     options.cache_key.feed("outdated")
+
+    options.pgo.extra_options = {"version_part": version_part}
     asyncio.run(_outdated(options))
 
 

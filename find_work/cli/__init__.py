@@ -68,6 +68,9 @@ class OptionsBase(ABC):
 class ModuleOptionsBase(OptionsBase, ABC):
     """ Base class for module-specific options. """
 
+    #: Extra options used in the command scope.
+    extra_options: dict[str, Any] | None = None
+
     @property
     @abstractmethod
     def cache_order(self) -> list[str]:
@@ -93,6 +96,15 @@ class BugzillaOptions(ModuleOptionsBase):
     @cached_property
     def cache_order(self) -> list[str]:
         return ["chronological_sort", "short_desc", "product", "component"]
+
+
+@dataclass
+class PgoOptions(ModuleOptionsBase):
+    """ Gentoo Packages subcommand options. """
+
+    @cached_property
+    def cache_order(self) -> list[str]:
+        return []
 
 
 @dataclass
@@ -155,8 +167,9 @@ class Options(OptionsBase):
     # Byte string used for creating cache key.
     cache_key: CacheKey = field(default_factory=CacheKey)
 
-    # Subcommand options.
+    #: Subcommand options.
     bugzilla: BugzillaOptions = field(default_factory=BugzillaOptions)
+    pgo: PgoOptions = field(default_factory=PgoOptions)
     pkgcheck: PkgcheckOptions = field(default_factory=PkgcheckOptions)
     repology: RepologyOptions = field(default_factory=RepologyOptions)
 

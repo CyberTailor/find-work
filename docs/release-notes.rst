@@ -5,8 +5,10 @@
 Release Notes
 =============
 
-0.6.2
+0.7.0
 -----
+
+* **New**: Filter oudated packages by version part (:bug:`4`).
 
 *Modules changelog:*
 

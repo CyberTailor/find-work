@@ -21,7 +21,7 @@ from find_work.cache import (
     write_json_cache,
 )
 from find_work.cli import Message, Options, ProgressDots
-from find_work.types import VersionBump
+from find_work.types import VersionBump, VersionPart
 from find_work.utils import aiohttp_session
 
 
@@ -87,6 +87,9 @@ def _collect_version_bumps(data: Iterable[set[Package]],
 async def _outdated(options: Options) -> None:
     dots = ProgressDots(options.verbose)
 
+    if (extra_options := options.repology.extra_options) is not None:
+        version_part: VersionPart | None = extra_options.get("version_part")
+
     options.say(Message.CACHE_LOAD)
     with dots():
         cached_data = read_json_cache(options.cache_key)
@@ -107,20 +110,32 @@ async def _outdated(options: Options) -> None:
             json_data = _projects_to_json(data)
             write_json_cache(json_data, options.cache_key)
 
-    outdated_set = _collect_version_bumps(data.values(), options)
-    for bump in outdated_set:
+    no_work = True
+    for bump in _collect_version_bumps(data.values(), options):
+        if version_part and not bump.changed(version_part):
+            continue
+
         options.echo(bump.atom + " ", nl=False)
         options.secho(bump.old_version, fg="red", nl=False)
         options.echo(" → ", nl=False)
         options.secho(bump.new_version, fg="green")
+        no_work = False
 
-    if len(outdated_set) == 0:
+    if no_work:
         options.say(Message.NO_WORK)
 
 
 @click.command()
+@click.option("-F", "--filter", "version_part",
+              type=click.Choice(["major", "minor", "patch"]),
+              help="Version part filter.")
 @click.pass_obj
-def outdated(options: Options) -> None:
-    """ Find outdated packages. """
+def outdated(options: Options, version_part: VersionPart | None = None) -> None:
+    """
+    Find outdated packages.
+    """
+
     options.cache_key.feed("outdated")
+
+    options.repology.extra_options = {"version_part": version_part}
     asyncio.run(_outdated(options))
