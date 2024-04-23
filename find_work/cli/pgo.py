@@ -57,7 +57,9 @@ def _collect_version_bumps(data: Iterable[dict],
 
 async def _outdated(options: Options) -> None:
     if options.maintainer:
-        raise NotImplementedError("-m option is not implemented for this command")
+        raise NotImplementedError(
+            "Filtering by maintainer is not implemented for this command"
+        )
 
     dots = ProgressDots(options.verbose)
 
