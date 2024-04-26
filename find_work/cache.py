@@ -8,15 +8,14 @@ import hashlib
 import json
 import tempfile
 from pathlib import Path
-from typing import Any
+from typing import Any, SupportsBytes
 
-from pydantic.dataclasses import dataclass
+from pydantic import BaseModel, PrivateAttr
 
 from find_work.constants import PACKAGE
 
 
-@dataclass
-class CacheKey:
+class CacheKey(BaseModel):
     """
     Cache key constructor.
 
@@ -41,7 +40,7 @@ class CacheKey:
     TypeError: Unsupported type: set
     """
 
-    data: bytes = b""
+    _data: bytes = PrivateAttr(default=b"")
 
     @staticmethod
     def _unsupported_type(value: Any) -> TypeError:
@@ -84,7 +83,7 @@ class CacheKey:
 
         accepted: bool = False
         for value in filter(self._feedable, args):
-            self.data += self._encode(value) + b"\0"
+            self._data += self._encode(value) + b"\0"
             accepted = True
         return accepted
 
@@ -96,22 +95,23 @@ class CacheKey:
         """
 
         if self._feedable(value):
-            self.data += self._encode(key) + b":"
-            self.data += self._encode(value) + b"\0"
+            self._data += self._encode(key) + b":"
+            self._data += self._encode(value) + b"\0"
             return True
         return False
 
     def __bytes__(self) -> bytes:
-        return self.data
+        return self._data
 
 
-def _get_cache_path(cache_key: bytes) -> Path:
-    hexdigest = hashlib.sha256(cache_key).hexdigest()
+def _get_cache_path(cache_key: SupportsBytes) -> Path:
+    hexdigest = hashlib.sha256(bytes(cache_key)).hexdigest()
     file = Path(tempfile.gettempdir()) / PACKAGE / hexdigest
     return file.with_suffix(".json")
 
 
-def write_json_cache(data: Any, cache_key: CacheKey, **kwargs: Any) -> None:
+def write_json_cache(data: Any, cache_key: SupportsBytes,
+                     **kwargs: Any) -> None:
     """
     Write a JSON cache file in a temporary directory. Keyword arguments are
     passed to :py:function:`json.dump` as is.
@@ -120,31 +120,36 @@ def write_json_cache(data: Any, cache_key: CacheKey, **kwargs: Any) -> None:
     :param cache_key: cache key object
     """
 
-    cache = _get_cache_path(bytes(cache_key))
+    cache = _get_cache_path(cache_key)
     try:
         cache.parent.mkdir(parents=True, exist_ok=True)
     except OSError:
         return
 
-    with open(cache, "w") as file:
+    with open(cache, "wb") as file:
         try:
             json.dump(data, file, **kwargs)
         except OSError:
             pass
 
 
-def read_json_cache(cache_key: CacheKey, **kwargs: Any) -> Any | None:
+def read_json_cache(cache_key: SupportsBytes, *, raw: bool = False,
+                    **kwargs: Any) -> Any | None:
     """
     Read a JSON cache file stored in a temporary directory. Keyword arguments
     are passed to :py:function:`json.load` as is.
 
     :param cache_key: cache key object
+    :param raw: skip decoding and return raw file contents instead
+
     :return: decoded data or ``None``
     """
 
-    cache = _get_cache_path(bytes(cache_key))
+    cache = _get_cache_path(cache_key)
     if not cache.is_file():
         return None
 
-    with open(cache) as file:
+    with open(cache, "rb") as file:
+        if raw:
+            return file.read()
         return json.load(file, **kwargs)
