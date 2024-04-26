@@ -12,7 +12,7 @@ import gentoopm
 import repology_client
 import repology_client.exceptions
 from gentoopm.basepm.atom import PMAtom
-from pydantic import RootModel, TypeAdapter
+from pydantic import TypeAdapter
 from repology_client.types import Package
 from sortedcontainers import SortedSet
 
@@ -43,15 +43,9 @@ def _projects_from_raw_json(raw_json: str | bytes) -> ProjectsMapping:
     return projects_adapter.validate_json(raw_json)
 
 
-def _projects_to_json(data: ProjectsMapping) -> dict[str, list]:
-    result: dict[str, list] = {}
-    for project, packages in data.items():
-        result[project] = []
-        for pkg in packages:
-            pkg_model = RootModel[Package](pkg)
-            pkg_dump = pkg_model.model_dump(mode="json", exclude_none=True)
-            result[project].append(pkg_dump)
-    return result
+def _projects_to_raw_json(data: ProjectsMapping) -> bytes:
+    projects_adapter = TypeAdapter(ProjectsMapping)
+    return projects_adapter.dump_json(data, exclude_none=True)
 
 
 def _collect_version_bumps(data: Iterable[set[Package]],
@@ -105,8 +99,8 @@ async def _outdated(options: Options) -> None:
             return
         options.say(Message.CACHE_WRITE)
         with dots():
-            json_data = _projects_to_json(data)
-            write_json_cache(json_data, options.cache_key)
+            raw_json_data = _projects_to_raw_json(data)
+            write_json_cache(raw_json_data, options.cache_key, raw=True)
 
     no_work = True
     for bump in _collect_version_bumps(data.values(), options):

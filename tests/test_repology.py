@@ -2,7 +2,6 @@
 # SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
 # No warranty
 
-import json
 from sortedcontainers import SortedSet
 from repology_client.types import Package
 
@@ -11,7 +10,7 @@ from find_work.cli import Options
 from find_work.cli.repology import (
     _collect_version_bumps,
     _projects_from_raw_json,
-    _projects_to_json,
+    _projects_to_raw_json,
 )
 
 
@@ -34,7 +33,7 @@ def test_projects_json_roundtrip():
             ),
         },
     }
-    assert data == _projects_from_raw_json(json.dumps(_projects_to_json(data)))
+    assert data == _projects_from_raw_json(_projects_to_raw_json(data))
 
 
 def test_collect_version_bumps():

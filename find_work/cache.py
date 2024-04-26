@@ -110,7 +110,7 @@ def _get_cache_path(cache_key: SupportsBytes) -> Path:
     return file.with_suffix(".json")
 
 
-def write_json_cache(data: Any, cache_key: SupportsBytes,
+def write_json_cache(data: Any, cache_key: SupportsBytes, *, raw: bool = False,
                      **kwargs: Any) -> None:
     """
     Write a JSON cache file in a temporary directory. Keyword arguments are
@@ -118,6 +118,7 @@ def write_json_cache(data: Any, cache_key: SupportsBytes,
 
     :param data: data to serialize
     :param cache_key: cache key object
+    :param raw: skip encoding and write raw data instead
     """
 
     cache = _get_cache_path(cache_key)
@@ -128,6 +129,9 @@ def write_json_cache(data: Any, cache_key: SupportsBytes,
 
     with open(cache, "wb") as file:
         try:
+            if raw:
+                cache.write_bytes(bytes(data))
+                return
             json.dump(data, file, **kwargs)
         except OSError:
             pass
