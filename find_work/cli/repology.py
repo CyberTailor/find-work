@@ -12,7 +12,7 @@ import gentoopm
 import repology_client
 import repology_client.exceptions
 from gentoopm.basepm.atom import PMAtom
-from pydantic import RootModel
+from pydantic import RootModel, TypeAdapter
 from repology_client.types import Package
 from sortedcontainers import SortedSet
 
@@ -24,8 +24,10 @@ from find_work.cli import Message, Options, ProgressDots
 from find_work.types import VersionBump, VersionPart
 from find_work.utils import aiohttp_session
 
+ProjectsMapping = dict[str, set[Package]]
 
-async def _fetch_outdated(options: Options) -> dict[str, set[Package]]:
+
+async def _fetch_outdated(options: Options) -> ProjectsMapping:
     filters: dict = {}
     if options.maintainer:
         filters["maintainer"] = options.maintainer
@@ -36,16 +38,12 @@ async def _fetch_outdated(options: Options) -> dict[str, set[Package]]:
                                                   session=session, **filters)
 
 
-def _projects_from_json(data: dict[str, list]) -> dict[str, set[Package]]:
-    result: dict[str, set[Package]] = {}
-    for project, packages in data.items():
-        result[project] = set()
-        for pkg in packages:
-            result[project].add(Package(**pkg))
-    return result
+def _projects_from_raw_json(raw_json: str | bytes) -> ProjectsMapping:
+    projects_adapter = TypeAdapter(ProjectsMapping)
+    return projects_adapter.validate_json(raw_json)
 
 
-def _projects_to_json(data: dict[str, set[Package]]) -> dict[str, list]:
+def _projects_to_json(data: ProjectsMapping) -> dict[str, list]:
     result: dict[str, list] = {}
     for project, packages in data.items():
         result[project] = []
@@ -92,11 +90,11 @@ async def _outdated(options: Options) -> None:
 
     options.say(Message.CACHE_LOAD)
     with dots():
-        cached_data = read_json_cache(options.cache_key)
-    if cached_data is not None:
+        raw_cached_data = read_json_cache(options.cache_key, raw=True)
+    if raw_cached_data is not None:
         options.say(Message.CACHE_READ)
         with dots():
-            data = _projects_from_json(cached_data)
+            data = _projects_from_raw_json(raw_cached_data)
     else:
         options.vecho("Fetching data from Repology API", nl=False, err=True)
         try:
