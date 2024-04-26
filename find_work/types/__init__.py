@@ -3,11 +3,12 @@
 # No warranty
 
 """
-Type definitions for the application, implemented as enums and Pydantic models.
+Public type definitions for the application, implemented as enums and Pydantic
+models.
 """
 
 from dataclasses import field
-from enum import Enum, StrEnum, auto
+from enum import StrEnum, auto
 from itertools import zip_longest
 
 from pydantic.dataclasses import dataclass
@@ -71,10 +72,3 @@ class BugView:
     last_change_date: str = field(compare=False)
     assigned_to: str = field(compare=False)
     summary: str = field(compare=False)
-
-
-class CliOptionKind(Enum):
-    SIMPLE = auto()
-
-    OPTION = auto()
-    FLAG = auto()

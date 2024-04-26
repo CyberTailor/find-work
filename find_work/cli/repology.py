@@ -5,7 +5,7 @@
 """ CLI subcommands for everything Repology. """
 
 import asyncio
-from collections.abc import Iterable
+from collections.abc import Collection
 
 import click
 import gentoopm
@@ -17,14 +17,15 @@ from repology_client.types import Package
 from sortedcontainers import SortedSet
 
 from find_work.cache import (
-    read_json_cache,
-    write_json_cache,
+    read_raw_json_cache,
+    write_raw_json_cache,
 )
 from find_work.cli import Message, Options, ProgressDots
 from find_work.types import VersionBump, VersionPart
 from find_work.utils import aiohttp_session
 
-ProjectsMapping = dict[str, set[Package]]
+PackageSet = set[Package]
+ProjectsMapping = dict[str, PackageSet]
 
 
 async def _fetch_outdated(options: Options) -> ProjectsMapping:
@@ -38,17 +39,7 @@ async def _fetch_outdated(options: Options) -> ProjectsMapping:
                                                   session=session, **filters)
 
 
-def _projects_from_raw_json(raw_json: str | bytes) -> ProjectsMapping:
-    projects_adapter = TypeAdapter(ProjectsMapping)
-    return projects_adapter.validate_json(raw_json)
-
-
-def _projects_to_raw_json(data: ProjectsMapping) -> bytes:
-    projects_adapter = TypeAdapter(ProjectsMapping)
-    return projects_adapter.dump_json(data, exclude_none=True)
-
-
-def _collect_version_bumps(data: Iterable[set[Package]],
+def _collect_version_bumps(data: Collection[PackageSet],
                            options: Options) -> SortedSet[VersionBump]:
     pm = gentoopm.get_package_manager()
 
@@ -59,7 +50,7 @@ def _collect_version_bumps(data: Iterable[set[Package]],
 
         for pkg in packages:
             if pkg.status == "outdated" and pkg.repo == options.repology.repo:
-                # ``pkg.version`` can contain spaces, better avoid it!
+                # "pkg.version" can contain spaces, better avoid it!
                 origversion = pkg.origversion or pkg.version
                 atom = pm.Atom(f"={pkg.visiblename}-{origversion}")
 
@@ -84,11 +75,11 @@ async def _outdated(options: Options) -> None:
 
     options.say(Message.CACHE_LOAD)
     with dots():
-        raw_cached_data = read_json_cache(options.cache_key, raw=True)
-    if raw_cached_data is not None:
+        raw_data = read_raw_json_cache(options.cache_key)
+    if raw_data:
         options.say(Message.CACHE_READ)
         with dots():
-            data = _projects_from_raw_json(raw_cached_data)
+            data = TypeAdapter(ProjectsMapping).validate_json(raw_data)
     else:
         options.vecho("Fetching data from Repology API", nl=False, err=True)
         try:
@@ -99,8 +90,10 @@ async def _outdated(options: Options) -> None:
             return
         options.say(Message.CACHE_WRITE)
         with dots():
-            raw_json_data = _projects_to_raw_json(data)
-            write_json_cache(raw_json_data, options.cache_key, raw=True)
+            raw_json = TypeAdapter(ProjectsMapping).dump_json(
+                data, exclude_none=True
+            )
+            write_raw_json_cache(raw_json, options.cache_key)
 
     no_work = True
     for bump in _collect_version_bumps(data.values(), options):

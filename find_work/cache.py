@@ -5,7 +5,6 @@
 """ Implementation of caching functionality. """
 
 import hashlib
-import json
 import tempfile
 from pathlib import Path
 from typing import Any, SupportsBytes
@@ -110,15 +109,14 @@ def _get_cache_path(cache_key: SupportsBytes) -> Path:
     return file.with_suffix(".json")
 
 
-def write_json_cache(data: Any, cache_key: SupportsBytes, *, raw: bool = False,
-                     **kwargs: Any) -> None:
+def write_raw_json_cache(data: SupportsBytes, cache_key: SupportsBytes) -> None:
     """
-    Write a JSON cache file in a temporary directory. Keyword arguments are
-    passed to :py:function:`json.dump` as is.
+    Write a JSON cache file in a temporary directory.
 
-    :param data: data to serialize
+    This function silently fails on OS errors.
+
+    :param data: raw JSON
     :param cache_key: cache key object
-    :param raw: skip encoding and write raw data instead
     """
 
     cache = _get_cache_path(cache_key)
@@ -129,31 +127,23 @@ def write_json_cache(data: Any, cache_key: SupportsBytes, *, raw: bool = False,
 
     with open(cache, "wb") as file:
         try:
-            if raw:
-                cache.write_bytes(bytes(data))
-                return
-            json.dump(data, file, **kwargs)
+            file.write(bytes(data))
         except OSError:
             pass
 
 
-def read_json_cache(cache_key: SupportsBytes, *, raw: bool = False,
-                    **kwargs: Any) -> Any | None:
+def read_raw_json_cache(cache_key: SupportsBytes) -> bytes:
     """
-    Read a JSON cache file stored in a temporary directory. Keyword arguments
-    are passed to :py:function:`json.load` as is.
+    Read a JSON cache file stored in a temporary directory.
 
     :param cache_key: cache key object
-    :param raw: skip decoding and return raw file contents instead
 
-    :return: decoded data or ``None``
+    :return: raw JSON file contents or empty byte string
     """
 
     cache = _get_cache_path(cache_key)
     if not cache.is_file():
-        return None
+        return b""
 
     with open(cache, "rb") as file:
-        if raw:
-            return file.read()
-        return json.load(file, **kwargs)
+        return file.read()

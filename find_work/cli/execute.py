@@ -13,7 +13,7 @@ from click_aliases import ClickAliasedGroup
 
 from find_work.cli import Options
 from find_work.config import ConfigAlias, ConfigModuleOption, load_config
-from find_work.types import CliOptionKind
+from find_work.types._config import CliOptionKind
 
 
 def _new_click_option(opt: ConfigModuleOption) -> Callable:

@@ -5,24 +5,44 @@
 """ CLI subcommands for Gentoo Packages website. """
 
 import asyncio
-from collections.abc import Iterable
 
 import click
 import gentoopm
+from pydantic import TypeAdapter
 from sortedcontainers import SortedDict, SortedSet
 from tabulate import tabulate
 
 from find_work.cache import (
-    read_json_cache,
-    write_json_cache,
+    read_raw_json_cache,
+    write_raw_json_cache,
 )
-from find_work.cli import Message, Options, ProgressDots
-from find_work.constants import PGO_BASE_URL, PGO_API_URL
-from find_work.types import VersionBump, VersionPart
+from find_work.cli import (
+    Message,
+    Options,
+    ProgressDots,
+)
+from find_work.constants import (
+    PGO_BASE_URL,
+    PGO_API_URL,
+)
+from find_work.types import (
+    VersionBump,
+    VersionPart,
+)
+from find_work.types._pgo import (
+    GraphQlResponse,
+    OutdatedPackage,
+    PkgCheckResult,
+    StableCandidate,
+)
 from find_work.utils import aiohttp_session
 
+OutdatedPackageSet = frozenset[OutdatedPackage]
+PkgCheckResultSet = frozenset[PkgCheckResult]
+StableCandidateSet = frozenset[StableCandidate]
 
-async def _fetch_outdated() -> list[dict]:
+
+async def _fetch_outdated() -> OutdatedPackageSet:
     query = """query {
         outdatedPackages{
             Atom
@@ -34,24 +54,22 @@ async def _fetch_outdated() -> list[dict]:
     async with aiohttp_session() as session:
         async with session.post(PGO_API_URL, json={"query": query},
                                 raise_for_status=True) as response:
-            data = await response.json()
-    return data.get("data", {}).get("outdatedPackages", [])
+            raw_data = await response.read()
+
+    graphql = GraphQlResponse.model_validate_json(raw_data)
+    return graphql.data.outdated
 
 
-def _collect_version_bumps(data: Iterable[dict],
+def _collect_version_bumps(data: OutdatedPackageSet,
                            options: Options) -> SortedSet[VersionBump]:
     if options.only_installed:
         pm = gentoopm.get_package_manager()
 
     result: SortedSet[VersionBump] = SortedSet()
     for item in data:
-        bump = VersionBump(item["Atom"],
-                           item.get("GentooVersion", "(unknown)"),
-                           item.get("NewestVersion", "(unknown)"))
-
-        if options.only_installed and bump.atom not in pm.installed:
+        if options.only_installed and item.atom not in pm.installed:
             continue
-        result.add(bump)
+        result.add(item.as_version_bump)
     return result
 
 
@@ -68,8 +86,12 @@ async def _outdated(options: Options) -> None:
 
     options.say(Message.CACHE_LOAD)
     with dots():
-        data = read_json_cache(options.cache_key)
-    if data is None:
+        raw_data = read_raw_json_cache(options.cache_key)
+    if raw_data:
+        options.say(Message.CACHE_READ)
+        with dots():
+            data = TypeAdapter(OutdatedPackageSet).validate_json(raw_data)
+    else:
         options.vecho("Fetching data from Gentoo Packages API",
                       nl=False, err=True)
         with dots():
@@ -79,7 +101,10 @@ async def _outdated(options: Options) -> None:
             return
         options.say(Message.CACHE_WRITE)
         with dots():
-            write_json_cache(data, options.cache_key)
+            raw_json = TypeAdapter(OutdatedPackageSet).dump_json(
+                data, by_alias=True, exclude_none=True
+            )
+            write_raw_json_cache(raw_json, options.cache_key)
 
     no_work = True
     for bump in _collect_version_bumps(data, options):
@@ -96,24 +121,18 @@ async def _outdated(options: Options) -> None:
         options.say(Message.NO_WORK)
 
 
-async def _fetch_maintainer_stabilization(maintainer: str) -> list[dict]:
-    url = f"{PGO_BASE_URL}/maintainer/{maintainer}/stabilization.json"
+async def _fetch_maintainer_stabilization(maintainer: str) -> PkgCheckResultSet:
+
+    url = PGO_BASE_URL + f"/maintainer/{maintainer}/stabilization.json"
     async with aiohttp_session() as session:
         async with session.get(url, raise_for_status=True) as response:
-            data = await response.json()
+            raw_data = await response.read()
 
-    # bring data to a common structure
-    return [
-        {
-            "Atom": f"{item['category']}/{item['package']}",
-            "Version": item["version"],
-            "Message": item["message"],
-        }
-        for item in data
-    ]
+    data = TypeAdapter(StableCandidateSet).validate_json(raw_data)
+    return frozenset(item.as_pkgcheck_result for item in data)
 
 
-async def _fetch_all_stabilization() -> list[dict]:
+async def _fetch_all_stabilization() -> PkgCheckResultSet:
     query = """query {
         pkgCheckResults(Class: "StableRequest") {
             Atom
@@ -125,27 +144,29 @@ async def _fetch_all_stabilization() -> list[dict]:
     async with aiohttp_session() as session:
         async with session.post(PGO_API_URL, json={"query": query},
                                 raise_for_status=True) as response:
-            data = await response.json()
-    return data.get("data", {}).get("pkgCheckResults", [])
+            raw_data = await response.read()
+
+    graphql = GraphQlResponse.model_validate_json(raw_data)
+    return graphql.data.pkgcheck
 
 
-async def _fetch_stabilization(options: Options) -> list[dict]:
+async def _fetch_stabilization(options: Options) -> PkgCheckResultSet:
     if options.maintainer:
         return await _fetch_maintainer_stabilization(options.maintainer)
     return await _fetch_all_stabilization()
 
 
-def _collect_stable_candidates(data: list[dict],
+def _collect_stable_candidates(data: PkgCheckResultSet,
                                options: Options) -> SortedDict[str, str]:
     if options.only_installed:
         pm = gentoopm.get_package_manager()
 
     result: SortedDict[str, str] = SortedDict()
     for item in data:
-        if options.only_installed and item["Atom"] not in pm.installed:
+        if options.only_installed and item.atom not in pm.installed:
             continue
-        key = "-".join([item["Atom"], item["Version"]])
-        result[key] = item["Message"]
+        key = "-".join([item.atom, item.version])
+        result[key] = item.message
     return result
 
 
@@ -154,8 +175,12 @@ async def _stabilization(options: Options) -> None:
 
     options.say(Message.CACHE_LOAD)
     with dots():
-        data = read_json_cache(options.cache_key)
-    if data is None:
+        raw_data = read_raw_json_cache(options.cache_key)
+    if raw_data:
+        options.say(Message.CACHE_READ)
+        with dots():
+            data = TypeAdapter(PkgCheckResultSet).validate_json(raw_data)
+    else:
         options.vecho("Fetching data from Gentoo Packages API",
                       nl=False, err=True)
         with dots():
@@ -165,7 +190,10 @@ async def _stabilization(options: Options) -> None:
             return
         options.say(Message.CACHE_WRITE)
         with dots():
-            write_json_cache(data, options.cache_key)
+            raw_data = TypeAdapter(PkgCheckResultSet).dump_json(
+                data, by_alias=True, exclude_none=True
+            )
+            write_raw_json_cache(raw_data, options.cache_key)
 
     candidates = _collect_stable_candidates(data, options)
     if len(candidates) != 0:
@@ -193,6 +221,9 @@ def outdated(options: Options, version_part: VersionPart | None = None) -> None:
 @click.command()
 @click.pass_obj
 def stabilization(options: Options) -> None:
-    """ Find outdated packages. """
+    """
+    Find stable candidates.
+    """
+
     options.cache_key.feed("stabilization")
     asyncio.run(_stabilization(options))

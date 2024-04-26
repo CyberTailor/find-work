@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 from find_work.config import Config
-from find_work.types import CliOptionKind
+from find_work.types._config import CliOptionKind
 
 
 def test_alias_empty():

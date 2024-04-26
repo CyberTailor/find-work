@@ -7,33 +7,7 @@ from repology_client.types import Package
 
 from find_work.types import VersionBump
 from find_work.cli import Options
-from find_work.cli.repology import (
-    _collect_version_bumps,
-    _projects_from_raw_json,
-    _projects_to_raw_json,
-)
-
-
-def test_projects_json_roundtrip():
-    data = {
-        "firefox": {
-            Package(
-                repo="gentoo",
-                visiblename="www-client/firefox",
-                version="9999",
-                status="test",
-                licenses=frozenset(["GPL-2", "LGPL-2.1", "MPL-2.0"]),
-            ),
-            Package(
-                repo="gentoo",
-                visiblename="www-client/firefox-bin",
-                version="9999",
-                status="test",
-                licenses=frozenset(["GPL-2", "LGPL-2.1", "MPL-2.0"]),
-            ),
-        },
-    }
-    assert data == _projects_from_raw_json(_projects_to_raw_json(data))
+from find_work.cli.repology import _collect_version_bumps
 
 
 def test_collect_version_bumps():

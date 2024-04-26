@@ -10,7 +10,14 @@ Release Notes
 
 * **New**: Filter oudated packages by version part (:bug:`4`).
 
+* Use Pydantic models to load and serialize caches. This could have better
+  perfomance and correctness but also introduce new bugs.
+
 *Modules changelog:*
+
+* **bugzilla**:
+
+  * Switch to REST API from XMLRPC.
 
 * **pgo**:
 

@@ -17,7 +17,7 @@ from platformdirs import PlatformDirs
 
 import find_work.data
 from find_work.constants import DEFAULT_CONFIG, ENTITY, PACKAGE
-from find_work.types import CliOptionKind
+from find_work.types._config import CliOptionKind
 
 
 # FIXME: Find out how to use Pydantic for type validation
