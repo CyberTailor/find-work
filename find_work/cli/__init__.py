@@ -9,7 +9,6 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from dataclasses import field
-from functools import cached_property
 from enum import Enum, auto
 from typing import Any
 
@@ -77,66 +76,6 @@ class ModuleOptionsBase(OptionsBase, ABC):
         ...
 
 
-@dataclass
-class BugzillaOptions(ModuleOptionsBase):
-    """ Bugzilla subcommand options. """
-
-    # Product name.
-    product: str = ""
-
-    # Component name.
-    component: str = ""
-
-    # Bug summary.
-    short_desc: str = ""
-
-    # Sort by date last modified or by ID.
-    chronological_sort: bool = False
-
-    @cached_property
-    def cache_order(self) -> list[str]:
-        return ["chronological_sort", "short_desc", "product", "component"]
-
-
-@dataclass
-class PgoOptions(ModuleOptionsBase):
-    """ Gentoo Packages subcommand options. """
-
-    @cached_property
-    def cache_order(self) -> list[str]:
-        return []
-
-
-@dataclass
-class PkgcheckOptions(ModuleOptionsBase):
-    """ pkgcheck subcommand options. """
-
-    # Repository name or absolute path.
-    repo: str = ""
-
-    # Class of the pkgcheck warning, e.g. DeprecatedEapi
-    keywords: list[str] = field(default_factory=list)
-
-    # Message of the pkgcheck warning, e.g. 'uses deprecated EAPI 5'
-    message: str = ""
-
-    @cached_property
-    def cache_order(self) -> list[str]:
-        return ["repo", "keywords", "message"]
-
-
-@dataclass
-class RepologyOptions(ModuleOptionsBase):
-    """ Repology subcommand options. """
-
-    # Repository name.
-    repo: str = ""
-
-    @cached_property
-    def cache_order(self) -> list[str]:
-        return ["repo"]
-
-
 class Message(Enum):
     """ Typical messages. """
 
@@ -166,12 +105,6 @@ class Options(OptionsBase):
 
     # Byte string used for creating cache key.
     cache_key: CacheKey = field(default_factory=CacheKey)
-
-    #: Subcommand options.
-    bugzilla: BugzillaOptions = field(default_factory=BugzillaOptions)
-    pgo: PgoOptions = field(default_factory=PgoOptions)
-    pkgcheck: PkgcheckOptions = field(default_factory=PkgcheckOptions)
-    repology: RepologyOptions = field(default_factory=RepologyOptions)
 
     @staticmethod
     def echo(*args: Any, **kwargs: Any) -> None:
