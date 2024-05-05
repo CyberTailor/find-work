@@ -23,18 +23,15 @@ emerge dev-util/find-work
 
 ### Other systems
 
-```sh
-pip install find-work --user
-sudo make install-data
-```
+`pip install find-work --user`
 
 
 Packaging
 ---------
 
-You can track new releases using an [atom feed][atom] provided by GitHub.
+You can track new releases using an [RSS feed][rss] provided by PyPI.
 
-[atom]: https://github.com/cybertailor/find-work/releases.atom
+[rss]: https://pypi.org/rss/project/find-work/releases.xml
 
 
 Contributing

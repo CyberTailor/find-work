@@ -53,7 +53,7 @@ test = [
 find-work = "find_work.__main__:cli"
 
 [project.urls]
-Home = "https://find-work.sysrq.in"
+Home = "https://find-work.sysrq.in/"
 Source = "https://git.sysrq.in/find-work"
 Issues = "https://bugs.sysrq.in/enter_bug.cgi?product=Software&component=find-work"
 Changelog = "https://find-work.sysrq.in/release-notes.html"
@@ -65,7 +65,6 @@ path = "find_work/constants.py"
 include = [
     "/find_work",
 
-    "/Makefile",
     "/docs",
     "/man",
     "/tests",
@@ -88,14 +87,10 @@ check_untyped_defs = true
 
 [[tool.mypy.overrides]]
 module = [
-    "bugzilla",
-    "bugzilla.*",
     "click_aliases",
     "deepmerge",
     "gentoopm",
     "gentoopm.*",
     "pkgcheck",
-    # indirect deps
-    "argcomplete",
 ]
 ignore_missing_imports = true

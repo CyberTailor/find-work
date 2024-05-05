@@ -3,8 +3,7 @@
 # No warranty
 
 """
-Public type definitions for the application, implemented as enums and Pydantic
-models.
+Public type definitions for the application, to be used by plugins.
 """
 
 from dataclasses import field
@@ -15,8 +14,17 @@ from pydantic.dataclasses import dataclass
 
 
 class VersionPart(StrEnum):
+    """
+    Enumeration of semver-like version parts.
+    """
+
+    #: Major version.
     MAJOR = auto()
+
+    #: Minor version.
     MINOR = auto()
+
+    #: Patch version.
     PATCH = auto()
 
 
@@ -26,8 +34,13 @@ class VersionBump:
     Version bump representation for a Gentoo repository.
     """
 
+    #: Package name.
     atom: str
+
+    #: Outdated version.
     old_version: str = field(compare=False)
+
+    #: Newest available version.
     new_version: str = field(compare=False)
 
     def changed(self, stop_after_part: VersionPart) -> bool:
@@ -66,9 +79,18 @@ class VersionBump:
 
 @dataclass(frozen=True, order=True)
 class BugView:
-    """ Bug listing item representation. """
+    """
+    Bug listing item representation.
+    """
 
+    #: Bug ID.
     bug_id: int
+
+    #: Date this bug was last touched, in ISO format.
     last_change_date: str = field(compare=False)
+
+    #: Assignee of this bug.
     assigned_to: str = field(compare=False)
+
+    #: Summary of this bug.
     summary: str = field(compare=False)

@@ -1,6 +1,5 @@
-# SPDX-License-Identifier: WTFPL
+# SPDX-License-Identifier: CC0-1.0
 # SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
-# No warranty
 
 
 # Global Flags
@@ -14,7 +13,7 @@ params.maintainer = "maintainer-needed@gentoo.org"
 # Command Aliases
 
 [alias.bump-requests]
-command = "find_work.cli.bugzilla.ls"
+command = "find_work.plugins.bugzilla.ls"
 description = "Find packages with version bump requests on Bugzilla."
 shortcuts = ["brq"]
 options.bugzilla.short_desc = "version bump"
@@ -23,7 +22,7 @@ options.bugzilla.component = {"option" = ["-c", "--component"]}
 options.bugzilla.chronological_sort = {"flag" = ["-t", "--time"]}
 
 [alias.keyword-requests]
-command = "find_work.cli.bugzilla.ls"
+command = "find_work.plugins.bugzilla.ls"
 description = "Find keywording requests on Bugzilla."
 shortcuts = ["krq"]
 options.bugzilla.product = "Gentoo Linux"
@@ -32,7 +31,7 @@ options.bugzilla.short_desc = {"option" = ["-Q", "--query"]}
 options.bugzilla.chronological_sort = {"flag" = ["-t", "--time"]}
 
 [alias.stable-requests]
-command = "find_work.cli.bugzilla.ls"
+command = "find_work.plugins.bugzilla.ls"
 description = "Find stabilization requests on Bugzilla."
 shortcuts = ["srq"]
 options.bugzilla.product = "Gentoo Linux"

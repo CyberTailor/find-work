@@ -2,7 +2,9 @@
 # SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
 # No warranty
 
-""" Utility functions and classes. """
+"""
+Utility functions and classes.
+"""
 
 import re
 import warnings
