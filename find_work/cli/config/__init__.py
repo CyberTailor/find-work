@@ -7,10 +7,10 @@ Apply configuration to the command-line interface.
 """
 
 from collections.abc import Callable
-from importlib import import_module
 from typing import Any
 
 import click
+import pluggy
 from click_aliases import ClickAliasedGroup
 from pydantic import validate_call
 
@@ -25,10 +25,11 @@ from find_work.cli.config._types import (
 from find_work.cli.options import MainOptions
 
 
-def _new_click_option(opt_module: str, opt_name: str,
-                      opt_obj: ConfigAliasValue) -> Callable:
+@validate_call
+def _new_click_option(opt_module: str,
+                      opt_name: str, opt_obj: ConfigAliasValue) -> Callable:
 
-    def callback(ctx: click.Context, param: str, value: Any) -> None:
+    def callback(ctx: click.Context, param: click.Option, value: Any) -> None:
         options: MainOptions = ctx.obj
         options.override(opt_module, opt_name, value)
 
@@ -45,26 +46,28 @@ def _new_click_option(opt_module: str, opt_name: str,
     return click.option(*opt_obj.names, callback=callback, is_flag=is_flag)
 
 
-def _callback_from_config(alias_name: str, alias_obj: ConfigAlias) -> Callable:
+def _callback_from_config(alias_name: str, alias_obj: ConfigAlias, *,
+                          plugman: pluggy.PluginManager) -> Callable | None:
 
     @click.pass_context
     def callback(ctx: click.Context, **kwargs: Any) -> None:
-        cmd_module, cmd_function = alias_obj.command.rsplit(".", maxsplit=1)
-        cmd_obj = getattr(import_module(cmd_module), cmd_function)
-
         options: MainOptions = ctx.obj
-        for opt_module in alias_obj.options:
-            for opt_name, opt_obj in alias_obj.options[opt_module].root.items():
-                # cli options are processed in their own callbacks
-                if isinstance(opt_obj, ConfigAliasLiteralValue):
-                    options.override(opt_module, opt_name, opt_obj)
+        opt_module_name, opt_module_obj = alias_obj.options.popitem()
+        for opt_name, opt_obj in opt_module_obj.root.items():
+            # cli options are processed in their own callbacks
+            if isinstance(opt_obj, ConfigAliasLiteralValue):
+                options.override(opt_module_name, opt_name, opt_obj.root)
 
-        ctx.invoke(cmd_obj)
+        ctx.invoke(cmd_obj, init_parent=True)
+
+    cmd_obj = plugman.hook.get_command_by_name(command=alias_obj.command)
+    if cmd_obj is None:
+        return None
 
     for opt_module in alias_obj.options:
         for opt_name, opt_obj in alias_obj.options[opt_module]:
-            decorate_with_option = _new_click_option(opt_module, opt_name,
-                                                     opt_obj)
+            decorate_with_option = _new_click_option(opt_module,
+                                                     opt_name, opt_obj)
             callback = decorate_with_option(callback)
 
     callback.__name__ = alias_name
@@ -72,18 +75,28 @@ def _callback_from_config(alias_name: str, alias_obj: ConfigAlias) -> Callable:
     return callback
 
 
-def load_aliases(group: ClickAliasedGroup, *, config: ConfigRoot) -> None:
+def apply_custom_aliases(plugman: pluggy.PluginManager,
+                         config: ConfigRoot) -> Callable[[ClickAliasedGroup],
+                                                         ClickAliasedGroup]:
     """
-    Load custom aliases from the configuration.
+    Decorator function to load custom aliases from the configuration.
 
-    :param group: click group for new commands
+    :param plugman: Pluggy plugin manager
     :param config: configuration object
+
+    :returns: modified Click group
     """
 
-    for alias_name, alias_obj in config.aliases.items():
-        callback = _callback_from_config(alias_name, alias_obj)
-        add_command = group.command(aliases=alias_obj.shortcuts)
-        add_command(callback)
+    def decorator(group: ClickAliasedGroup) -> ClickAliasedGroup:
+        for alias_name, alias_obj in config.aliases.items():
+            callback = _callback_from_config(alias_name, alias_obj,
+                                             plugman=plugman)
+            if callback is not None:
+                command = click.command(callback)
+                group.add_command(command, aliases=alias_obj.shortcuts)
+        return group
+
+    return decorator
 
 
 @validate_call

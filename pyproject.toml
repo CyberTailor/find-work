@@ -22,6 +22,7 @@ dependencies = [
     "deepmerge",
     "gentoopm<2",
     "platformdirs<5,>=4",
+    "pluggy<2",
     "pydantic<3,>=2",
     "requests<3,>=2",
 ]
@@ -53,7 +54,7 @@ test = [
 find-work = "find_work.__main__:cli"
 
 [project.urls]
-Home = "https://find-work.sysrq.in"
+Home = "https://find-work.sysrq.in/"
 Source = "https://git.sysrq.in/find-work"
 Issues = "https://bugs.sysrq.in/enter_bug.cgi?product=Software&component=find-work"
 Changelog = "https://find-work.sysrq.in/release-notes.html"

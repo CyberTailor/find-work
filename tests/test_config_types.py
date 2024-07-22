@@ -34,8 +34,8 @@ def test_alias_sample():
     assert len(config.aliases) == 1
     alias_name, alias_obj = config.aliases.popitem()
 
-    assert alias_name == "sample"
-    assert alias_obj.command == "find_work.plugins.sample.sample"
+    assert alias_name == "foo"
+    assert alias_obj.command == "sample:bar"
     assert alias_obj.description == "Sample alias."
     assert alias_obj.shortcuts == {"smpl"}
 

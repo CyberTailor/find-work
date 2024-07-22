@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: CC0-1.0
 # SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
 
-[alias.sample]
-command = "find_work.plugins.sample.sample"
+[alias.foo]
+command = "sample:bar"
 description = "Sample alias."
 shortcuts = ["smpl"]
 options.sample.simple = "value"

@@ -11,15 +11,17 @@ from typing import Any
 
 import click
 import gentoopm
+import pluggy
 from click_aliases import ClickAliasedGroup
 from deepmerge import always_merger
 from platformdirs import PlatformDirs
 
 import find_work.data
-from find_work.cli.config import apply_custom_flags, load_aliases
 from find_work.cli import colors_disabled_by_env
+from find_work.cli.config import apply_custom_aliases, apply_custom_flags
 from find_work.cli.config._types import ConfigRoot
 from find_work.cli.options import MainOptions
+from find_work.cli.plugins import PluginSpec
 from find_work.constants import (
     DEFAULT_CONFIG,
     ENTITY,
@@ -29,9 +31,30 @@ from find_work.constants import (
 
 
 @functools.cache
+def get_plugin_manager() -> pluggy.PluginManager:
+    """
+    Load plug-ins from entry points.
+
+    Calls to this functions are cached.
+
+    :returns: plugin manager instance
+    """
+
+    plugman = pluggy.PluginManager(PACKAGE)
+    plugman.add_hookspecs(PluginSpec)
+    plugman.load_setuptools_entrypoints(PACKAGE)
+
+    return plugman
+
+
+@functools.cache
 def load_config() -> ConfigRoot:
     """
     Load configuration files.
+
+    Calls to this functions are cached.
+
+    :returns: parsed config
     """
 
     default_config = files(find_work.data).joinpath(DEFAULT_CONFIG).read_text()
@@ -87,7 +110,10 @@ def cli(ctx: click.Context, **kwargs: Any) -> None:
         options.maintainer = ctx.params["maintainer"]
         options.breadcrumbs.feed_option("maintainer", options.maintainer)
 
+    get_plugin_manager().hook.setup_base_command(options=options)
 
+
+@apply_custom_aliases(get_plugin_manager(), load_config())
 @cli.group(aliases=["exec", "e"], cls=ClickAliasedGroup)
 def execute() -> None:
     """
@@ -95,4 +121,4 @@ def execute() -> None:
     """
 
 
-load_aliases(execute, config=load_config())
+get_plugin_manager().hook.attach_base_command(group=cli)
