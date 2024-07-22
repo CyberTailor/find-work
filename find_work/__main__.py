@@ -2,17 +2,54 @@
 # SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
 # No warranty
 
-import os
+import functools
+import tomllib
 from datetime import date
+from importlib.resources import files
+from pathlib import Path
 from typing import Any
 
 import click
+import gentoopm
 from click_aliases import ClickAliasedGroup
+from deepmerge import always_merger
+from platformdirs import PlatformDirs
 
-import find_work.cli.execute
-from find_work.cli import Options, apply_custom_flags
-from find_work.config import load_config
-from find_work.constants import VERSION
+import find_work.data
+from find_work.cli.config import apply_custom_flags, load_aliases
+from find_work.cli import colors_disabled_by_env
+from find_work.cli.config._types import ConfigRoot
+from find_work.cli.options import MainOptions
+from find_work.constants import (
+    DEFAULT_CONFIG,
+    ENTITY,
+    PACKAGE,
+    VERSION,
+)
+
+
+@functools.cache
+def load_config() -> ConfigRoot:
+    """
+    Load configuration files.
+    """
+
+    default_config = files(find_work.data).joinpath(DEFAULT_CONFIG).read_text()
+    toml = tomllib.loads(default_config)
+
+    pm = gentoopm.get_package_manager()
+    system_config = Path(pm.root) / "etc" / PACKAGE / "config.toml"
+    if system_config.is_file():
+        with open(system_config, "rb") as file:
+            always_merger.merge(toml, tomllib.load(file))
+
+    dirs = PlatformDirs(PACKAGE, ENTITY, roaming=True)
+    user_config = dirs.user_config_path / "config.toml"
+    if user_config.is_file():
+        with open(user_config, "rb") as file:
+            always_merger.merge(toml, tomllib.load(file))
+
+    return ConfigRoot.model_validate(toml)
 
 
 @click.group(cls=ClickAliasedGroup,
@@ -25,28 +62,30 @@ from find_work.constants import VERSION
               help="Only match installed packages.")
 @click.version_option(VERSION, "-V", "--version")
 @click.pass_context
-@apply_custom_flags
+@apply_custom_flags(load_config())
 def cli(ctx: click.Context, **kwargs: Any) -> None:
-    """ Personal advice utility for Gentoo package maintainers. """
+    """
+    Personal advice utility for Gentoo package maintainers.
+    """
 
     # Process custom global flags
-    for flag in load_config().flags:
-        if ctx.params[flag.name]:
-            for opt, val in flag.params.items():
+    for flag_name, flag_obj in load_config().flags.items():
+        if ctx.params[flag_name]:
+            for opt, val in flag_obj.params.items():
                 ctx.params[opt] = val
 
-    ctx.ensure_object(Options)
-    options: Options = ctx.obj
+    ctx.ensure_object(MainOptions)
+    options: MainOptions = ctx.obj
 
     options.verbose = not ctx.params["quiet"]
     options.only_installed = ctx.params["installed"]
-    if any(var in os.environ for var in ["NOCOLOR", "NO_COLOR"]):
+    if colors_disabled_by_env():
         options.colors = False
 
-    options.cache_key.feed(date.today().toordinal())
+    options.breadcrumbs.feed(date.today().toordinal())
     if ctx.params["maintainer"]:
         options.maintainer = ctx.params["maintainer"]
-        options.cache_key.feed_option("maintainer", options.maintainer)
+        options.breadcrumbs.feed_option("maintainer", options.maintainer)
 
 
 @cli.group(aliases=["exec", "e"], cls=ClickAliasedGroup)
@@ -56,4 +95,4 @@ def execute() -> None:
     """
 
 
-find_work.cli.execute.load_aliases(execute)
+load_aliases(execute, config=load_config())
