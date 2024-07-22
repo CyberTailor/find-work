@@ -2,7 +2,9 @@
 # SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
 # No warranty
 
-""" Utility functions and classes. """
+"""
+Utility functions and classes.
+"""
 
 import re
 import warnings
@@ -10,6 +12,7 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 import aiohttp
+from pydantic import validate_call
 
 from find_work.constants import USER_AGENT
 
@@ -42,6 +45,7 @@ version_re = re.compile(r"""
     """, re.ASCII | re.VERBOSE)
 
 
+@validate_call(validate_return=True)
 def _guess_package_name(pv: str) -> str:
     parts = pv.split("-")
     match len(parts):
@@ -72,6 +76,7 @@ def _guess_package_name(pv: str) -> str:
     return pv
 
 
+@validate_call(validate_return=True)
 def extract_package_name(line: str) -> str | None:
     """
     Find the first CPV-looking thing in a line and try to extract its package

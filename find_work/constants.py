@@ -2,22 +2,24 @@
 # SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
 # No warranty
 
-""" All important constants in one place. """
+"""
+All important constants in one place.
+"""
 
-# Application package name.
+#: Application package name.
 PACKAGE = "find-work"
 
-# Application version.
+#: Application version.
 VERSION = "0.7.0"
 
-# Application homepage.
+#: Application homepage.
 HOMEPAGE = "https://find-work.sysrq.in"
 
-# Application affiliation.
+#: Application affiliation.
 ENTITY = "sysrq.in"
 
-# Application's User-agent header.
+#: Application's User-agent header.
 USER_AGENT = f"Mozilla/5.0 (compatible; {PACKAGE}/{VERSION}; +{HOMEPAGE})"
 
-# Default config file name.
+#: Default config file name.
 DEFAULT_CONFIG = "default_config.toml"
