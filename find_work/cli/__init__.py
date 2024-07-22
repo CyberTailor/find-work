@@ -4,10 +4,8 @@
 
 """ Basic command-line functionality. """
 
-import threading
 from abc import ABC, abstractmethod
-from collections.abc import Callable, Generator
-from contextlib import contextmanager
+from collections.abc import Callable
 from dataclasses import field
 from enum import Enum, auto
 from typing import Any
@@ -17,41 +15,6 @@ from pydantic.dataclasses import dataclass
 
 from find_work.cache import CacheKey
 from find_work.config import load_config
-
-
-class ProgressDots:
-    """ Print a dot to the terminal every second. """
-
-    def __init__(self, active: bool) -> None:
-        self.active = active
-        self._timer: threading.Timer | None = None
-
-    def _tick(self) -> None:
-        click.echo(" .", nl=False, err=True)
-        self._timer = threading.Timer(1.0, self._tick)
-        self._timer.start()
-
-    def _start(self) -> None:
-        if not self.active:
-            return
-
-        self._timer = threading.Timer(1.0, self._tick)
-        self._timer.start()
-
-    def _stop(self) -> None:
-        if not self.active or self._timer is None:
-            return
-
-        self._timer.cancel()
-        click.echo()
-
-    @contextmanager
-    def __call__(self) -> Generator[None, None, None]:
-        self._start()
-        try:
-            yield
-        finally:
-            self._stop()
 
 
 class OptionsBase(ABC):
