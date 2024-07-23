@@ -5,6 +5,26 @@
 Release Notes
 =============
 
+0.90.0
+------
+
+- **Breaking**: Modules are no longer shipped with find-work but installed as
+  loadable plug-ins instead.
+
+- **Breaking**: If you had custom aliases, you need to change ``command`` from
+  a fully qualified import name to ``"plugin:command"`` syntax.
+
+- **Gone**: ``pgo`` module, as Gentoo Packages website does no longer have
+  GraphQL API.
+
+- Implement Pydantic-based config parsing.
+
+- Use striсter type validation here and here.
+
+*Dependencies introduced:*
+
+* :pypi:`pluggy`
+
 0.7.0
 -----
 

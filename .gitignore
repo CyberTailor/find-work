@@ -8,7 +8,6 @@ __pycache__
 
 completions
 docs/_build
-docs/api
 dist
 venv
 

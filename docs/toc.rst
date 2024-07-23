@@ -11,13 +11,18 @@ Table of Contents
    index
 
 .. toctree::
-   :caption: Documentation
+   :caption: User Documentation
 
    installation
    getting-started
    configuration
-   contributing
    release-notes
+
+.. toctree::
+   :caption: Developer Documentation
+
+   contributing
+   reference
 
 .. toctree::
    :caption: External Links

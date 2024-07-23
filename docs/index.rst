@@ -10,18 +10,15 @@ find-work is a fun little tool that lets you discover what you can do for Gentoo
 as a package maintainer. It contains filters to show only packages you might be
 interested in.
 
-The following data sources are supported:
-
-* `Gentoo Bugzilla <https://bugs.gentoo.org/>`_
-* `Gentoo Packages <https://packages.gentoo.org/>`_
-* `Repology <https://repology.org/>`_
-
-Support for other sources could be added in the future.
+With the right plug-ins installed, find-work can use multiple data sources, such
+as Repology, Gentoo Bugzilla and pkgcheck.
 
 If you want to learn how to use find-work, check out the following resources:
 
 * :doc:`installation`
 * :doc:`getting-started`
+
+If you want to develop a new plugin, please refer to to :doc:`reference`.
 
 If you need help, or want to talk to the developers, use our chat rooms:
 

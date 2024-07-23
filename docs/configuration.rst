@@ -59,8 +59,8 @@ You can create new commands from existing ones!
     # Add some shortcuts to your new command. 
     shortcuts = ["guru-out"]
 
-    # Here we set the target command with Python syntax.
-    command = "find_work.cli.repology.outdated"
+    # Here we set the target command with "module:command" syntax.
+    command = "repology:outdated"
 
     # And here we pass a static value directly to the internal options.
     options.repology.repo = "gentoo_ovl_guru"

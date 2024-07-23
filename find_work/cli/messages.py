@@ -42,6 +42,8 @@ class Status(StrEnum):
 class Result(Message, Enum):
     """
     Messages for non-standard command execution results.
+
+    :meta private:
     """
 
     #: Source didn't return any data.

@@ -78,14 +78,14 @@ class MainOptions(OptionsBase):
     @staticmethod
     def echo(message: Any | None = None, **kwargs: Any) -> None:
         """
-        Simple alias to :py:function:`click.echo`.
+        Simple alias to :py:func:`click.echo`.
         """
 
         click.echo(message, **kwargs)
 
     def vecho(self, message: Any | None = None, **kwargs: Any) -> None:
         """
-        Alias to :py:function:`click.echo` but with our verbosity settings.
+        Alias to :py:func:`click.echo` but with our verbosity settings.
         """
 
         if self.verbose:
@@ -93,7 +93,7 @@ class MainOptions(OptionsBase):
 
     def secho(self, message: Any | None = None, **kwargs: Any) -> None:
         """
-        Alias to :py:function:`click.secho` but with our color settings.
+        Alias to :py:func:`click.secho` but with our color settings.
         """
 
         kwargs.pop("color", None)

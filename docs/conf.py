@@ -18,6 +18,8 @@ release = '0.7.0'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
+    'sphinx.ext.autosummary',
+    'sphinx.ext.autodoc',
     'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
     'sphinx_prompt',
@@ -54,6 +56,14 @@ intersphinx_mapping = {
     'aiohttp': ('https://docs.aiohttp.org/en/stable', None),
     'click': ('https://click.palletsprojects.com/en/latest', None),
     'requests': ('https://requests.readthedocs.io/en/latest/', None),
+}
+
+autosummary_generate = False
+autodoc_default_options = {
+    'show-inheritance': True,
+    'ignore-module-all': True,
+    'undoc-members': True,
+    'member-order': 'bysource',
 }
 
 # -- Options for HTML output -------------------------------------------------

@@ -51,25 +51,6 @@ Finally, send a patch to the developer using `git send-email`_:
 
 .. _mirror repo: https://github.com/cybertailor/find-work
 
-Adding a new module
--------------------
-
-1. Create a new Python file in the :file:`find_work/cli` directory.
-2. Implement all logic here.
-3. Register commands in the :file:`find_work/__main__.py` file.
-4. Update the manpage and release notes.
-
-Feel free to copy/paste from existing sources, I do the same.
-
-Naming conventions
-------------------
-
-:py:class:`click.Group` name must be the same as the Python module that
-implements its commands.
-
-:py:class:`click.Command` wrapped function's name should be the same as its
-primary name. If that's not possible, use one of aliases instead.
-
 Code style
 ----------
 

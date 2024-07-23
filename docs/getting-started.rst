@@ -25,7 +25,7 @@ To discover, which outdated packages in GURU are installed on your system, run:
 
    .. seealso:: :manpage:`find-work.1` manual page
 
-You can use command aliases, for example:
+You can use short command aliases, for example:
 
 .. prompt:: bash
 

@@ -5,6 +5,14 @@
 Installation
 ============
 
+.. tip::
+
+   Most functionality is split into loadable plug-ins. Check them out!
+
+   * :pypi:`find-work-bugzilla`
+   * :pypi:`find-work-pkgcheck`
+   * :pypi:`find-work-repology`
+
 Prerequisites
 -------------
 
@@ -17,7 +25,7 @@ functionality, such as filtering by installed packages.
 Gentoo
 ------
 
-find-work is packaged for Gentoo in the GURU ebuild repository.
+find-work and its plugins are packaged for Gentoo in the GURU ebuild repository.
 
 .. prompt:: bash #
 
@@ -32,8 +40,5 @@ Manual installation
 
    pip install find-work --user
 
-To install manual pages and shell completions, run:
-
-.. prompt:: bash #
-
-   make install-data
+This way, plugins are not pulled automatically and you need to install them
+manually as well.
