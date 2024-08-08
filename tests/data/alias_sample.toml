@@ -5,6 +5,6 @@
 command = "sample:bar"
 description = "Sample alias."
 shortcuts = ["smpl"]
-options.sample.simple = "value"
+options.sample.simple = ["simple", "value"]
 options.sample.option = {"option" = ["-o", "--option"]}
 options.sample.flag = {"flag" = ["-f", "--flag"]}

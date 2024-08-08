@@ -44,7 +44,7 @@ def test_alias_sample():
 
     simple_opt = options["simple"]
     assert isinstance(simple_opt, ConfigAliasLiteralValue)
-    assert simple_opt.root == "value"
+    assert simple_opt.model_dump() == ("simple", "value")
 
     option_opt = options["option"]
     assert isinstance(option_opt, ConfigAliasCliOption)

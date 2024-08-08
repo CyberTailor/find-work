@@ -56,7 +56,7 @@ def _callback_from_config(alias_name: str, alias_obj: ConfigAlias, *,
         for opt_name, opt_obj in opt_module_obj.root.items():
             # cli options are processed in their own callbacks
             if isinstance(opt_obj, ConfigAliasLiteralValue):
-                options.override(opt_module_name, opt_name, opt_obj.root)
+                options.override(opt_module_name, opt_name, opt_obj.model_dump())
 
         ctx.invoke(cmd_obj, init_parent=True)
 
