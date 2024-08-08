@@ -5,6 +5,13 @@
 Release Notes
 =============
 
+0.91.0
+------
+
+- **Breaking**: Plugins need to use ``find_work.plugins`` entry point group in
+  order to register themselves. Turns out the former name was incorrect and
+  broke many unrelated packages!
+
 0.90.0
 ------
 

@@ -42,7 +42,7 @@ def get_plugin_manager() -> pluggy.PluginManager:
 
     plugman = pluggy.PluginManager(PACKAGE)
     plugman.add_hookspecs(PluginSpec)
-    plugman.load_setuptools_entrypoints(PACKAGE)
+    plugman.load_setuptools_entrypoints("find_work.plugins")
 
     return plugman
 
