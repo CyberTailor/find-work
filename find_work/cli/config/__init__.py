@@ -19,34 +19,52 @@ from find_work.cli.config._types import (
     ConfigAliasCliOption,
     ConfigAliasLiteralValue,
     ConfigAliasValue,
+    ConfigFlag,
     ConfigRoot,
 )
 from find_work.cli.options import MainOptions
 
 
-@validate_call
-def apply_custom_flags(config: ConfigRoot) -> Callable[[ClickAliasedGroup],
-                                                       ClickAliasedGroup]:
+class CustomFlag(click.Option):
     """
-    Decorator function to load custom global flags from the configuration.
-
-    :param config: configuration object
-
-    :returns: modified Click group
+    Special kind of option that only overrides the value of another option.
     """
 
-    def decorator(group: ClickAliasedGroup) -> ClickAliasedGroup:
-        for flag_name, flag_obj in config.flags.items():
-            names = {f"--{flag_name}"}
-            names |= flag_obj.shortcuts
+    def __init__(self, flag_name: str, flag_obj: ConfigFlag):
+        self.flag_name = flag_name
+        self.flag_obj = flag_obj
 
-            decorate_with_option = click.option(*names,
-                                                help=flag_obj.description,
-                                                is_flag=True)
-            group = decorate_with_option(group)
-        return group
+        names: list[str] = [f"--{self.flag_name}"]
+        names.extend(self.flag_obj.shortcuts)
 
-    return decorator
+        super().__init__(names, help=self.flag_obj.description, is_flag=True)
+
+    def handle_parse_result(self, ctx: click.Context,
+                            *args: Any, **kwargs: Any) -> tuple[Any, list[str]]:
+        rv = super().handle_parse_result(ctx, *args, **kwargs)
+        if ctx.params[self.flag_name]:
+            for opt, val in self.flag_obj.params.items():
+                ctx.params[opt] = val
+        return rv
+
+
+class ClickCustomFlagsGroup(ClickAliasedGroup):
+    """
+    Lazy-load custom global flags from the configuration.
+    """
+
+    def __init__(self, *args: Any, config: ConfigRoot, **kwargs: Any):
+        super().__init__(*args, **kwargs)
+        self._config = config
+
+    def get_params(self, ctx: click.Context) -> list[click.Parameter]:
+        rv = super().get_params(ctx)
+
+        # Custom flags need to go to the end, otherwise they will be neglected.
+        for flag_name, flag_obj in sorted(self._config.flags.items()):
+            rv.append(CustomFlag(flag_name, flag_obj))
+
+        return rv
 
 
 class ClickExecutorGroup(click.Group):
@@ -56,11 +74,6 @@ class ClickExecutorGroup(click.Group):
 
     def __init__(self, *args: Any, plugman: pluggy.PluginManager,
                  config: ConfigRoot, **kwargs: Any):
-        """
-        :param plugman: Pluggy plugin manager
-        :param config: configuration object
-        """
-
         super().__init__(*args, **kwargs)
         self._plugin_manager = plugman
         self._config = config

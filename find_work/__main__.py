@@ -11,13 +11,15 @@ from typing import Any
 
 import click
 import pluggy
-from click_aliases import ClickAliasedGroup
 from deepmerge import always_merger
 from platformdirs import PlatformDirs
 
 import find_work.data
 from find_work.cli import colors_disabled_by_env
-from find_work.cli.config import ClickExecutorGroup, apply_custom_flags
+from find_work.cli.config import (
+    ClickCustomFlagsGroup,
+    ClickExecutorGroup,
+)
 from find_work.cli.config._types import ConfigRoot
 from find_work.cli.options import MainOptions
 from find_work.cli.plugins import PluginSpec
@@ -73,7 +75,7 @@ def load_config() -> ConfigRoot:
     return ConfigRoot.model_validate(toml)
 
 
-@click.group(cls=ClickAliasedGroup,
+@click.group(cls=ClickCustomFlagsGroup, config=load_config(),
              context_settings={"help_option_names": ["-h", "--help"]})
 @click.option("-m", "--maintainer", metavar="EMAIL",
               help="Filter by package maintainer.")
@@ -83,17 +85,10 @@ def load_config() -> ConfigRoot:
               help="Only match installed packages.")
 @click.version_option(VERSION, "-V", "--version")
 @click.pass_context
-@apply_custom_flags(load_config())
 def cli(ctx: click.Context, **kwargs: Any) -> None:
     """
     Personal advice utility for Gentoo package maintainers.
     """
-
-    # Process custom global flags
-    for flag_name, flag_obj in load_config().flags.items():
-        if ctx.params[flag_name]:
-            for opt, val in flag_obj.params.items():
-                ctx.params[opt] = val
 
     ctx.ensure_object(MainOptions)
     options: MainOptions = ctx.obj
