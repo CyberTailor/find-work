@@ -17,7 +17,7 @@ from platformdirs import PlatformDirs
 
 import find_work.data
 from find_work.cli import colors_disabled_by_env
-from find_work.cli.config import apply_custom_aliases, apply_custom_flags
+from find_work.cli.config import ClickExecutorGroup, apply_custom_flags
 from find_work.cli.config._types import ConfigRoot
 from find_work.cli.options import MainOptions
 from find_work.cli.plugins import PluginSpec
@@ -111,8 +111,8 @@ def cli(ctx: click.Context, **kwargs: Any) -> None:
     get_plugin_manager().hook.setup_base_command(options=options)
 
 
-@apply_custom_aliases(get_plugin_manager(), load_config())
-@cli.group(aliases=["exec", "e"], cls=ClickAliasedGroup)
+@cli.group(aliases=["exec", "e"], cls=ClickExecutorGroup,
+           plugman=get_plugin_manager(), config=load_config())
 def execute() -> None:
     """
     Execute a custom command.
