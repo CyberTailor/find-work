@@ -10,7 +10,7 @@ All important constants in one place.
 PACKAGE = "find-work"
 
 #: Application version.
-VERSION = "0.91.0"
+VERSION = "0.91.1"
 
 #: Application homepage.
 HOMEPAGE = "https://find-work.sysrq.in"
