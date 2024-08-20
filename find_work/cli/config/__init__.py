@@ -136,6 +136,8 @@ class ClickExecutorGroup(click.Group):
                           opt_obj: ConfigAliasValue) -> Callable:
 
         def callback(ctx: click.Context, param: click.Option, value: Any) -> None:
+            if not value or ctx.resilient_parsing:
+                return
             options: MainOptions = ctx.obj
             options.override(opt_module, opt_name, value)
 
