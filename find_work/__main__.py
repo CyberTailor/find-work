@@ -7,7 +7,6 @@ import tomllib
 from datetime import date
 from importlib.resources import files
 from pathlib import Path
-from typing import Any
 
 import click
 import pluggy
@@ -85,7 +84,8 @@ def load_config() -> ConfigRoot:
               help="Only match installed packages.")
 @click.version_option(VERSION, "-V", "--version")
 @click.pass_context
-def cli(ctx: click.Context, **kwargs: Any) -> None:
+def cli(ctx: click.Context, maintainer: str | None, quiet: bool = False,
+        installed: bool = False) -> None:
     """
     Personal advice utility for Gentoo package maintainers.
     """
@@ -93,14 +93,14 @@ def cli(ctx: click.Context, **kwargs: Any) -> None:
     ctx.ensure_object(MainOptions)
     options: MainOptions = ctx.obj
 
-    options.verbose = not ctx.params["quiet"]
-    options.only_installed = ctx.params["installed"]
+    options.verbose = not quiet
+    options.only_installed = installed
     if colors_disabled_by_env():
         options.colors = False
 
     options.breadcrumbs.feed(date.today().toordinal())
-    if ctx.params["maintainer"]:
-        options.maintainer = ctx.params["maintainer"]
+    if maintainer:
+        options.maintainer = maintainer
         options.breadcrumbs.feed_option("maintainer", options.maintainer)
 
     get_plugin_manager().hook.setup_base_command(options=options)

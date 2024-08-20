@@ -37,15 +37,18 @@ class CustomFlag(click.Option):
         names: list[str] = [f"--{self.flag_name}"]
         names.extend(self.flag_obj.shortcuts)
 
-        super().__init__(names, help=self.flag_obj.description, is_flag=True)
+        super().__init__(names, help=self.flag_obj.description,
+                         is_flag=True, expose_value=False)
 
     def handle_parse_result(self, ctx: click.Context,
                             *args: Any, **kwargs: Any) -> tuple[Any, list[str]]:
-        rv = super().handle_parse_result(ctx, *args, **kwargs)
-        if ctx.params[self.flag_name]:
+        rv_value, rv_args = super().handle_parse_result(ctx, *args, **kwargs)
+
+        if rv_value:
             for opt, val in self.flag_obj.params.items():
                 ctx.params[opt] = val
-        return rv
+
+        return rv_value, rv_args
 
 
 class ClickCustomFlagsGroup(ClickAliasedGroup):
