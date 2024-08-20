@@ -5,6 +5,18 @@
 Release Notes
 =============
 
+0.91.1
+------
+
+- Fix options defined in custom commands.
+
+- Improve start-up time by deferring loading of custom aliases.
+
+- Improve start-up time by hardcoding system config file location to
+  ``/etc/find-work/config.toml``.
+
+- Process custom global flags in a more thoughtful way.
+
 0.91.0
 ------
 
