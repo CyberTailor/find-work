@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Any
 
 import click
-import gentoopm
 import pluggy
 from click_aliases import ClickAliasedGroup
 from deepmerge import always_merger
@@ -60,8 +59,7 @@ def load_config() -> ConfigRoot:
     default_config = files(find_work.data).joinpath(DEFAULT_CONFIG).read_text()
     toml = tomllib.loads(default_config)
 
-    pm = gentoopm.get_package_manager()
-    system_config = Path(pm.root) / "etc" / PACKAGE / "config.toml"
+    system_config = Path("/etc") / PACKAGE / "config.toml"
     if system_config.is_file():
         with open(system_config, "rb") as file:
             always_merger.merge(toml, tomllib.load(file))
