@@ -21,59 +21,44 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     import requests
 
-pkg_re = re.compile(r"""
-    (?P<category>
-        [\w][-+.\w]*
-    )
-    /
-    (?P<pv>
-        [\w][-+.\w]*
-    )
-
-    # must be followed by whitespace, punctuation or end of line
-    (?=$|[:;,\s])
-    """, re.ASCII | re.VERBOSE)
-pkgname_re = re.compile(r"[\w][-+\w]*")
-version_re = re.compile(r"""
+_pkgname_re = r"[\w][-+\w]*?"
+_version_re = r"""
     \d+(\.\d+)*
     [a-z]?
     (_(alpha|beta|pre|rc|p)\d*)*
     (-r\d+)?
-
+"""
+_end_marker_re = r"""
     # must be followed by whitespace, punctuation or end of line
     (?=$|[:;,\s])
-    """, re.ASCII | re.VERBOSE)
+"""
 
+_pkgname_ver_re = r"""
+    {0}
+    -
+    {1}
+""".format(_pkgname_re, _version_re)
+_pkg_re = r"""
+    (?P<category>
+        [\w][-+.\w]*
+    )
+    /
+    (?P<pn>
+        {0}
+    )
+    (
+        -
+        (?P<pv>
+            {1}
+        )
+    )?
 
-@validate_call(validate_return=True)
-def _guess_package_name(pv: str) -> str:
-    parts = pv.split("-")
-    match len(parts):
-        case 0:
-            raise ValueError("Empty match")
-        case 1:
-            return pv
-        case 2:
-            if version_re.fullmatch(parts[-1]):
-                return "-".join(parts[:-1])
-            return pv
+    {2}
+""".format(_pkgname_re, _version_re, _end_marker_re)
 
-    # watch out, revision could be present!
-    for ver_start in [-2, -1]:
-        ver = "-".join(parts[ver_start:])
-        if not version_re.fullmatch(ver):
-            # something like "-bar" or "-r1"
-            continue
-
-        if len(parts[:ver_start]) > 1:
-            # Package names "must not end in a hyphen followed by anything
-            # matching the version syntax" (PMS 3.1.2)
-            name_end = parts[ver_start - 1]
-            if version_re.fullmatch(name_end):
-                continue
-
-        return "-".join(parts[:ver_start])
-    return pv
+pkgname_re = re.compile(_pkgname_re, re.ASCII | re.VERBOSE)
+pkgname_ver_re = re.compile(_pkgname_ver_re, re.ASCII | re.VERBOSE)
+pkg_re = re.compile(_pkg_re, re.ASCII | re.VERBOSE)
 
 
 @validate_call(validate_return=True)
@@ -86,6 +71,8 @@ def extract_package_name(line: str) -> str | None:
     :return: qualified package name or ``None``
 
     >>> extract_package_name("Please bump Firefox") is None
+    True
+    >>> extract_package_name("sys-kernel/genkernel-4-3-10 is an invalid atom") is None
     True
     >>> extract_package_name("media-libs/libjxl: version bump")
     'media-libs/libjxl'
@@ -101,11 +88,17 @@ def extract_package_name(line: str) -> str | None:
         return None
 
     category = match.group("category")
-    name = _guess_package_name(match.group("pv"))
+    name = match.group("pn")
 
-    # filter out false positives
+    # Filter out any false positives
     if not pkgname_re.fullmatch(name):
         return None
+
+    # Package names "must not end in a hyphen followed by anything
+    # matching the version syntax" (PMS 3.1.2)
+    if pkgname_ver_re.fullmatch(name):
+        return None
+
     return "/".join([category, name])
 
 

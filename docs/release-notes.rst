@@ -5,6 +5,12 @@
 Release Notes
 =============
 
+0.91.1-next
+-----------
+
+- Fix package name extraction algorithm. It is now based solely on regular
+  expressions and might work more correctly than the previous approach.
+
 0.91.1
 ------
 
