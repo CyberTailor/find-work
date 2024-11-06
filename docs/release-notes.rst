@@ -5,7 +5,7 @@
 Release Notes
 =============
 
-0.91.1-next
+0.91.2
 -----------
 
 - Fix package name extraction algorithm. It is now based solely on regular
