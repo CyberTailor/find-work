@@ -14,6 +14,8 @@ Release Notes
 - Include a Makefile to install manpages and shell completions in the sdist
   again.
 
+- Add a little message in the ``--help`` output mentioning there's a man page.
+
 0.91.1
 ------
 

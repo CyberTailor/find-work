@@ -88,6 +88,8 @@ def cli(ctx: click.Context, maintainer: str | None, quiet: bool = False,
         installed: bool = False) -> None:
     """
     Personal advice utility for Gentoo package maintainers.
+
+    See `man find-work` for the full help.
     """
 
     ctx.ensure_object(MainOptions)
