@@ -3,6 +3,7 @@
 # No warranty
 
 PROG = find-work
+BIN  = $(PROG)
 
 PREFIX      ?= /usr/local
 MANDIR      ?= $(PREFIX)/share/man
@@ -26,11 +27,11 @@ completions: completions/$(PROG).bash completions/$(PROG).zsh completions/$(PROG
 
 install-data: install-man install-comp
 
+install-comp: install-bashcomp install-zshcomp install-fishcomp
+
 install-man:
 	mkdir -p $(DESTDIR)$(MANDIR)/man1
 	$(INSTALL_DATA) man/$(PROG).1 $(DESTDIR)$(MANDIR)/man1
-
-install-comp: install-bashcomp install-zshcomp install-fishcomp
 
 install-bashcomp: completions/$(PROG).bash
 	mkdir -p $(DESTDIR)$(BASHCOMPDIR)
@@ -46,14 +47,14 @@ install-fishcomp: completions/$(PROG).fish
 
 completions/$(PROG).bash:
 	mkdir -p completions
-	_FIND_WORK_COMPLETE=bash_source $(PROG) > $@
+	_FIND_WORK_COMPLETE=bash_source $(BIN) > $@
 
 completions/$(PROG).zsh:
 	mkdir -p completions
-	_FIND_WORK_COMPLETE=zsh_source $(PROG) > $@
+	_FIND_WORK_COMPLETE=zsh_source $(BIN) > $@
 
 completions/$(PROG).fish:
 	mkdir -p completions
-	_FIND_WORK_COMPLETE=fish_source $(PROG) > $@
+	_FIND_WORK_COMPLETE=fish_source $(BIN) > $@
 
 .PHONY: help completions install-data install-man install-comp install-bashcomp install-zshcomp install-fishcomp
