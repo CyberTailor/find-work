@@ -40,5 +40,11 @@ Manual installation
 
    pip install find-work --user
 
+To install manual pages and shell completions, run:
+
+.. prompt:: bash #
+
+   make install-data
+
 This way, plugins are not pulled automatically and you need to install them
 manually as well.

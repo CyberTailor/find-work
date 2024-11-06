@@ -11,6 +11,9 @@ Release Notes
 - Fix package name extraction algorithm. It is now based solely on regular
   expressions and might work more correctly than the previous approach.
 
+- Include a Makefile to install manpages and shell completions in the sdist
+  again.
+
 0.91.1
 ------
 

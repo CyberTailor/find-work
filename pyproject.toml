@@ -67,6 +67,7 @@ path = "find_work/constants.py"
 include = [
     "/find_work",
 
+    "/Makefile",
     "/docs",
     "/man",
     "/tests",
