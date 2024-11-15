@@ -4,7 +4,7 @@
 
 import pytest
 
-from find_work.cli import colors_disabled_by_env
+from find_work.core.cli import colors_disabled_by_env
 
 
 def test_nocolor_undefined(monkeypatch: pytest.MonkeyPatch):

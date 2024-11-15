@@ -13,8 +13,8 @@ from typing import Any
 import click
 from pydantic import BaseModel, ConfigDict, Field, validate_call
 
-from find_work.cli.messages import Result
-from find_work.types.breadcrumbs import Breadcrumbs
+from find_work.core.cli.messages import Result
+from find_work.core.types.breadcrumbs import Breadcrumbs
 
 
 class OptionsBase(BaseModel, ABC):

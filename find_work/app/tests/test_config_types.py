@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from find_work.cli.config._types import (
+from find_work.app.config.types import (
     ConfigAliasCliFlag,
     ConfigAliasCliOption,
     ConfigAliasLiteralValue,

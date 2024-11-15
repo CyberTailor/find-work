@@ -52,7 +52,7 @@ test = [
 ]
 
 [project.scripts]
-find-work = "find_work.__main__:cli"
+find-work = "find_work.app.__main__:cli"
 
 [project.urls]
 Home = "https://find-work.sysrq.in/"
@@ -61,7 +61,10 @@ Issues = "https://bugs.sysrq.in/enter_bug.cgi?product=Software&component=find-wo
 Changelog = "https://find-work.sysrq.in/release-notes.html"
 
 [tool.hatch.version]
-path = "find_work/constants.py"
+path = "find_work/core/constants.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["find_work"]
 
 [tool.hatch.build.targets.sdist]
 include = [
@@ -70,7 +73,6 @@ include = [
     "/Makefile",
     "/docs",
     "/man",
-    "/tests",
 ]
 
 [tool.pytest.ini_options]
@@ -82,7 +84,8 @@ no_implicit_optional = true
 
 [[tool.mypy.overrides]]
 module = [
-    "tests.*",
+    "find_work.app.tests.*",
+    "find_work.core.tests.*",
 ]
 # requiring explicit types for all test methods would be cumbersome
 disallow_untyped_defs = false
@@ -98,6 +101,12 @@ module = [
 ]
 ignore_missing_imports = true
 
+[tool.bandit]
+exclude_dirs = [
+    "find_work/app/tests",
+    "find_work/core/tests",
+]
+
 [tool.bumpversion]
 current_version = "0.91.2"
 commit = true
@@ -106,7 +115,7 @@ tag_name = "{new_version}"
 sign_tags = true
 
 [[tool.bumpversion.files]]
-filename = "find_work/constants.py"
+filename = "find_work/core/constants.py"
 
 [[tool.bumpversion.files]]
 filename = "docs/conf.py"

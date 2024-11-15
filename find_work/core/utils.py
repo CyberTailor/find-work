@@ -14,7 +14,7 @@ from contextlib import asynccontextmanager
 import aiohttp
 from pydantic import validate_call
 
-from find_work.constants import USER_AGENT
+from find_work.core.constants import USER_AGENT
 
 with warnings.catch_warnings():
     # Disable annoying warning shown to LibreSSL users

@@ -14,7 +14,9 @@ import pluggy
 from click_aliases import ClickAliasedGroup
 from pydantic import validate_call
 
-from find_work.cli.config._types import (
+from find_work.core.cli.options import MainOptions
+
+from find_work.app.config.types import (
     ConfigAliasCliFlag,
     ConfigAliasCliOption,
     ConfigAliasLiteralValue,
@@ -22,7 +24,6 @@ from find_work.cli.config._types import (
     ConfigFlag,
     ConfigRoot,
 )
-from find_work.cli.options import MainOptions
 
 
 class CustomFlag(click.Option):

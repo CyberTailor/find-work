@@ -2,13 +2,13 @@
 .. SPDX-License-Identifier: WTFPL
 .. No warranty.
 
-find\_work.cli.messages
-=======================
+find\_work.core.cli.messages
+============================
 
-.. automodule:: find_work.cli.messages
+.. automodule:: find_work.core.cli.messages
    :members:
 
-.. autoclass:: find_work.cli.messages.Result
+.. autoclass:: find_work.core.cli.messages.Result
 
    .. attribute:: EMPTY_RESPONSE
 

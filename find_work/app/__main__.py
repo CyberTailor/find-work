@@ -13,21 +13,22 @@ import pluggy
 from deepmerge import always_merger
 from platformdirs import PlatformDirs
 
-import find_work.data
-from find_work.cli import colors_disabled_by_env
-from find_work.cli.config import (
-    ClickCustomFlagsGroup,
-    ClickExecutorGroup,
-)
-from find_work.cli.config._types import ConfigRoot
-from find_work.cli.options import MainOptions
-from find_work.cli.plugins import PluginSpec
-from find_work.constants import (
+from find_work.core.cli import colors_disabled_by_env
+from find_work.core.cli.options import MainOptions
+from find_work.core.cli.plugins import PluginSpec
+from find_work.core.constants import (
     DEFAULT_CONFIG,
     ENTITY,
     PACKAGE,
     VERSION,
 )
+
+import find_work.app.data
+from find_work.app.config import (
+    ClickCustomFlagsGroup,
+    ClickExecutorGroup,
+)
+from find_work.app.config.types import ConfigRoot
 
 
 @functools.cache
@@ -57,7 +58,7 @@ def load_config() -> ConfigRoot:
     :returns: parsed config
     """
 
-    default_config = files(find_work.data).joinpath(DEFAULT_CONFIG).read_text()
+    default_config = files(find_work.app.data).joinpath(DEFAULT_CONFIG).read_text()
     toml = tomllib.loads(default_config)
 
     system_config = Path("/etc") / PACKAGE / "config.toml"

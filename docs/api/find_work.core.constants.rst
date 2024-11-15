@@ -2,8 +2,8 @@
 .. SPDX-License-Identifier: WTFPL
 .. No warranty.
 
-find\_work.cli.options
-======================
+find\_work.core.constants
+=========================
 
-.. automodule:: find_work.cli.options
+.. automodule:: find_work.core.constants
    :members:

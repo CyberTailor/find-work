@@ -5,8 +5,17 @@
 Release Notes
 =============
 
-0.91.2
+0.91.2-next
 -----------
+
+- **Breaking**: Split the program into two Python packages (``core`` and
+  ``app``). All plugins need to be updated accordingly.
+
+- **Breaking**: Rename the implementation hook for plugins from ``hook_impl`` to
+  ``cli_hook_impl``.
+
+0.91.2
+------
 
 - Fix package name extraction algorithm. It is now based solely on regular
   expressions and might work more correctly than the previous approach.

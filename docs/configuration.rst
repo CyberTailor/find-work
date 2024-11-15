@@ -14,7 +14,7 @@ The `TOML`_ format is used to configure ``find-work``.
 
 The tool reads configuration from the following files, in that order:
 
-* *built-in* (:gitweb:`find_work/data/default_config.toml`)
+* *built-in* (:gitweb:`find_work/app/data/default_config.toml`)
 * :file:`/etc/find-work/config.toml`
 * :file:`~/.config/find-work/config.toml`
 

@@ -10,11 +10,11 @@ import click
 import pluggy
 from click_aliases import ClickAliasedGroup
 
-from find_work.cli.options import MainOptions
-from find_work.constants import PACKAGE
+from find_work.core.cli.options import MainOptions
+from find_work.core.constants import PACKAGE
 
-hook_spec = pluggy.HookspecMarker(PACKAGE)
-hook_impl = pluggy.HookimplMarker(PACKAGE)
+cli_hook_spec = pluggy.HookspecMarker(PACKAGE)
+cli_hook_impl = pluggy.HookimplMarker(PACKAGE)
 
 
 class PluginSpec:
@@ -22,7 +22,7 @@ class PluginSpec:
     Specifications of CLI plugin hooks.
     """
 
-    @hook_spec
+    @cli_hook_spec
     def attach_base_command(self, group: ClickAliasedGroup) -> None:
         """
         Attach plugin's base command to the CLI.
@@ -30,7 +30,7 @@ class PluginSpec:
         :param group: Click group
         """
 
-    @hook_spec
+    @cli_hook_spec
     def setup_base_command(self, options: MainOptions) -> None:
         """
         Initialize plugin's base command.
@@ -40,7 +40,7 @@ class PluginSpec:
         :param options: global options
         """
 
-    @hook_spec(firstresult=True)
+    @cli_hook_spec(firstresult=True)
     def get_command_by_name(self, command: str) -> click.Command | None:
         """
         Match a command by its name.
@@ -53,6 +53,6 @@ class PluginSpec:
 
 
 __all__ = [
-    "hook_impl",
+    "cli_hook_impl",
     "PluginSpec",
 ]

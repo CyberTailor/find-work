@@ -2,8 +2,8 @@
 .. SPDX-License-Identifier: WTFPL
 .. No warranty.
 
-find\_work.types.breadcrumbs
-============================
+find\_work.core.cache
+=====================
 
-.. automodule:: find_work.types.breadcrumbs
+.. automodule:: find_work.core.cache
    :members:

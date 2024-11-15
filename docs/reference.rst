@@ -8,8 +8,8 @@ API Reference
 .. autosummary::
     :toctree: api
 
-    find_work.cache
-    find_work.cli
-    find_work.constants
-    find_work.types
-    find_work.utils
+    find_work.core.cache
+    find_work.core.cli
+    find_work.core.constants
+    find_work.core.types
+    find_work.core.utils

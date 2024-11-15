@@ -11,7 +11,7 @@ import tempfile
 from pathlib import Path
 from typing import SupportsBytes
 
-from find_work.constants import PACKAGE
+from find_work.core.constants import PACKAGE
 
 
 def _get_cache_path(cache_key: SupportsBytes) -> Path:
