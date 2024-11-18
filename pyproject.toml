@@ -40,6 +40,10 @@ classifiers = [
 keywords = ["gentoo", "ebuild", "repository", "maintainer"]
 
 [project.optional-dependencies]
+tabulate = [
+    "tabulate",
+]
+
 docs = [
     "insipid-sphinx-theme",
     "sphinx",
@@ -53,6 +57,10 @@ test = [
 
 [project.scripts]
 find-work = "find_work.app.__main__:cli"
+
+[project.entry-points."find_work.reporters"]
+ConsoleBugViewReporter = "find_work.reporters.console:ConsoleBugViewReporter"
+ConsoleVersionBumpReporter = "find_work.reporters.console:ConsoleVersionBumpReporter"
 
 [project.urls]
 Home = "https://find-work.sysrq.in/"
@@ -86,6 +94,7 @@ no_implicit_optional = true
 module = [
     "find_work.app.tests.*",
     "find_work.core.tests.*",
+    "find_work.reporters.tests.*",
 ]
 # requiring explicit types for all test methods would be cumbersome
 disallow_untyped_defs = false
@@ -105,6 +114,7 @@ ignore_missing_imports = true
 exclude_dirs = [
     "find_work/app/tests",
     "find_work/core/tests",
+    "find_work/reporters/tests",
 ]
 
 [tool.bumpversion]
