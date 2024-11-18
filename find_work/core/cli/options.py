@@ -135,12 +135,12 @@ class MainOptions(OptionsBase):
 
     def exit(self, result: Result) -> None:
         """
-        Display a result message.
+        Display a result message to stderr.
 
         :param result: result message
         """
 
-        self.secho(result.text, fg=result.color)
+        self.secho(result.text, fg=result.color, err=True)
 
     @property
     def attr_order(self) -> Sequence[str]:
