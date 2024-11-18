@@ -7,11 +7,15 @@ import pytest
 from find_work.core.cli.options import MainOptions
 from find_work.core.types import (
     BugView,
+    PkgcheckResult,
+    PkgcheckResultPriority,
+    PkgcheckResultsGroup,
     VersionBump,
 )
 
 from find_work.reporters.html import (
     HtmlBugViewReporter,
+    HtmlPkgcheckResultReporter,
     HtmlVersionBumpReporter,
 )
 
@@ -70,6 +74,45 @@ def test_bug_view(capfd: pytest.CaptureFixture[str]):
         '<th>Assignee</th><th>Summary</th></tr></thead><tbody><tr>'
         '<tdstyle="text-align:right;">1</td><td>1970-01-01</td>'
         '<td>larry@gentoo.org</td><td>Moo!</td></tr></tbody></table>'
+    )
+
+    assert out == expected
+
+
+def test_pkgcheck_results_none(capfd: pytest.CaptureFixture[str]):
+    with HtmlPkgcheckResultReporter(MainOptions()) as reporter:
+        assert reporter.reporter_name == "html"
+        assert reporter.result_type == PkgcheckResultsGroup
+        assert reporter.active
+
+    out = "".join(capfd.readouterr().out.split())
+    assert len(out) == 0
+
+
+def test_pkgcheck_results(capfd: pytest.CaptureFixture[str]):
+    with HtmlPkgcheckResultReporter(MainOptions()) as reporter:
+        reporter.add_result({
+            "atom": "dev-foo/bar",
+            "results": sorted({
+                PkgcheckResult(
+                    PkgcheckResultPriority("style", "cyan"),
+                    "MinorNitpick",
+                    "You should not do this.",
+                ),
+                PkgcheckResult(
+                    PkgcheckResultPriority("error", "red"),
+                    "BadEbuildVoodoo",
+                    "Shame on you!",
+                ),
+            })
+        })
+
+    out = "".join(capfd.readouterr().out.split())
+    expected = (
+        '<h2>dev-foo/bar</h2><table><thead><tr><th>Level</th><th>Class</th>'
+        '<th>Description</th></tr></thead><tbody><tr><td>error</td>'
+        '<td>BadEbuildVoodoo</td><td>Shameonyou!</td></tr><tr><td>style</td>'
+        '<td>MinorNitpick</td><td>Youshouldnotdothis.</td></tr></tbody></table>'
     )
 
     assert out == expected
