@@ -159,7 +159,7 @@ commands = [
     ["mypy", "--explicit-package-bases", "{posargs:find_work}"],
 ]
 
-[tool.tox.testenv.lint]
+[tool.tox.env.lint]
 description = "run the linters"
 ignore_errors = true
 skip_install = true
