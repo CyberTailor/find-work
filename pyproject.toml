@@ -61,6 +61,8 @@ find-work = "find_work.app.__main__:cli"
 [project.entry-points."find_work.reporters"]
 ConsoleBugViewReporter = "find_work.reporters.console:ConsoleBugViewReporter"
 ConsoleVersionBumpReporter = "find_work.reporters.console:ConsoleVersionBumpReporter"
+HtmlBugViewReporter = "find_work.reporters.html:HtmlBugViewReporter"
+HtmlVersionBumpReporter = "find_work.reporters.html:HtmlVersionBumpReporter"
 
 [project.urls]
 Home = "https://find-work.sysrq.in/"
