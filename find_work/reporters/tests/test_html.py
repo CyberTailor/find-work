@@ -5,7 +5,7 @@
 import pytest
 
 from find_work.core.cli.options import MainOptions
-from find_work.core.types import (
+from find_work.core.types.results import (
     BugView,
     PkgcheckResult,
     PkgcheckResultPriority,

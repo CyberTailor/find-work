@@ -14,6 +14,8 @@ Release Notes
 - **Breaking**: Rename the implementation hook for plugins from ``hook_impl`` to
   ``cli_hook_impl``.
 
+- **Breaking**: Split result types into a separate Python module.
+
 - Add result reporters. Result reporter is a Python class, which is loadable via
   entry points and can output results of a certain type to the standard output.
 
