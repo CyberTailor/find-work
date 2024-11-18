@@ -78,7 +78,7 @@ def load_config() -> ConfigRoot:
 
 
 def reporter_callback(ctx: click.Context,
-                      param: click.Parameter, value: str) -> None:
+                      param: click.Parameter, value: str) -> str:
     if value == "list":
         reporters: set[str] = set()
         for ep in importlib.metadata.entry_points(group="find_work.reporters"):
@@ -91,6 +91,8 @@ def reporter_callback(ctx: click.Context,
                 click.echo(cls.reporter_name)
                 reporters.add(cls.reporter_name)
         ctx.exit()
+
+    return value
 
 
 @click.group(cls=ClickCustomFlagsGroup, config=load_config(),
