@@ -80,6 +80,8 @@ def test_bug_view(capfd: pytest.CaptureFixture[str]):
 
 
 def test_pkgcheck_results_none(capfd: pytest.CaptureFixture[str]):
+    pytest.importorskip("tabulate")
+
     with HtmlPkgcheckResultReporter(MainOptions()) as reporter:
         assert reporter.reporter_name == "html"
         assert reporter.result_type == PkgcheckResultsGroup
@@ -90,6 +92,8 @@ def test_pkgcheck_results_none(capfd: pytest.CaptureFixture[str]):
 
 
 def test_pkgcheck_results(capfd: pytest.CaptureFixture[str]):
+    pytest.importorskip("tabulate")
+
     with HtmlPkgcheckResultReporter(MainOptions()) as reporter:
         reporter.add_result({
             "atom": "dev-foo/bar",
