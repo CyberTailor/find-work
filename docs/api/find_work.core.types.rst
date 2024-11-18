@@ -9,6 +9,7 @@ find\_work.core.types
    :toctree: types
 
    find_work.core.types.breadcrumbs
+   find_work.core.types.results
 
 .. automodule:: find_work.core.types
    :members:

@@ -11,7 +11,7 @@ from typing import Any, TypeVar
 from pydantic import validate_call
 
 from find_work.core.reporters import AbstractReporter
-from find_work.core.types import (
+from find_work.core.types.results import (
     BugView,
     PkgcheckResultsGroup,
     VersionBump,
