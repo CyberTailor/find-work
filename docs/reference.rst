@@ -11,5 +11,6 @@ API Reference
     find_work.core.cache
     find_work.core.cli
     find_work.core.constants
+    find_work.core.reporters
     find_work.core.types
     find_work.core.utils

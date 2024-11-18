@@ -6,15 +6,20 @@
 Command line options implemented as a single object.
 """
 
+import importlib.metadata
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 import click
 from pydantic import BaseModel, ConfigDict, Field, validate_call
 
 from find_work.core.cli.messages import Result
 from find_work.core.types.breadcrumbs import Breadcrumbs
+
+if TYPE_CHECKING:
+    # Circular import.
+    from find_work.core.reporters import AbstractReporter
 
 
 class OptionsBase(BaseModel, ABC):
@@ -54,6 +59,9 @@ class MainOptions(OptionsBase):
     #: Unique predictable identificator that can be used as a cache key.
     breadcrumbs: Breadcrumbs = Field(default_factory=Breadcrumbs)
 
+    #: Select a reporter to use for output.
+    reporter_name: str = ""
+
     #: Display only packages for given maintainer email.
     maintainer: str = ""
 
@@ -74,6 +82,32 @@ class MainOptions(OptionsBase):
         for opt_group in filter(None, opt_module.split(".")):
             target = target.children[opt_group]
         target[opt_name] = value
+
+    def get_reporter_for(self, result_type: type) -> "AbstractReporter":
+        """
+        Get a reporter to output results.
+
+        :param result_type: result type (class) to represent
+
+        :returns: reporter instance to use in a context manager
+        :raises RuntimeError: when no suitable reporters found
+        """
+
+        from find_work.core.reporters import AbstractReporter
+
+        for ep in importlib.metadata.entry_points(group="find_work.reporters"):
+            cls = ep.load()
+            if (
+                isinstance(cls, type)
+                and issubclass(cls, AbstractReporter)
+                and cls.reporter_name == self.reporter_name
+                and cls.result_type is result_type
+                and (result := cls(self)).active
+            ):
+                return result
+
+        raise RuntimeError(f"No reporters found to represent {result_type} "
+                           f"with '{self.reporter_name}' reporter")
 
     @staticmethod
     def echo(message: Any | None = None, **kwargs: Any) -> None:
