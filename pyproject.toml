@@ -136,3 +136,42 @@ filename = "docs/conf.py"
 filename = "docs/release-notes.rst"
 search = "{current_version}-next"
 replace = "{new_version}"
+
+[tool.tox]
+requires = ["tox>=4.21"]
+min_version = "4.21"
+env_list = ["3.11", "3.12", "3.13", "lint"]
+
+[tool.tox.env_run_base]
+description = "run the tests + mypy under {base_python}"
+ignore_errors = true
+deps = [
+    "mypy",
+    "types-requests",
+    "types-tabulate",
+]
+extras = [
+    "tabulate",
+    "test",
+]
+commands = [
+    ["pytest", "-vv", "{tty:--color=yes}", "{posargs:find_work}"],
+    ["mypy", "--explicit-package-bases", "{posargs:find_work}"],
+]
+
+[tool.tox.testenv.lint]
+description = "run the linters"
+ignore_errors = true
+skip_install = true
+deps = [
+    "bandit",
+    "pycodestyle",
+    "pyflakes",
+    "reuse",
+]
+commands = [
+    ["reuse", "lint"],
+    ["pyflakes", "{posargs:find_work}"],
+    ["pycodestyle", "{posargs:find_work}"],
+    ["bandit", "-c", "pyproject.toml", "-r", "{posargs:find_work}"],
+]
