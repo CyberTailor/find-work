@@ -60,8 +60,10 @@ find-work = "find_work.app.__main__:cli"
 
 [project.entry-points."find_work.reporters"]
 ConsoleBugViewReporter = "find_work.reporters.console:ConsoleBugViewReporter"
+ConsolePkgcheckResultReporter = "find_work.reporters.console:ConsolePkgcheckResultReporter"
 ConsoleVersionBumpReporter = "find_work.reporters.console:ConsoleVersionBumpReporter"
 HtmlBugViewReporter = "find_work.reporters.html:HtmlBugViewReporter"
+HtmlPkgcheckResultReporter = "find_work.reporters.html:HtmlPkgcheckResultReporter"
 HtmlVersionBumpReporter = "find_work.reporters.html:HtmlVersionBumpReporter"
 
 [project.urls]

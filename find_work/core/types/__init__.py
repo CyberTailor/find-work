@@ -6,9 +6,11 @@
 Public type definitions for the application, to be used by plugins.
 """
 
+from collections.abc import Set
 from dataclasses import field
 from enum import StrEnum, auto
 from itertools import zip_longest
+from typing import TypedDict
 
 from pydantic import validate_call
 from pydantic.dataclasses import dataclass
@@ -96,3 +98,47 @@ class BugView:
 
     #: Summary of this bug.
     summary: str = field(compare=False)
+
+
+@dataclass(frozen=True, order=True)
+class PkgcheckResultPriority:
+    """
+    Scan result priority representation.
+    """
+
+    #: Error level (e.g. 'warning', 'style', 'error').
+    level: str
+
+    #: Text color (e.g. 'red', 'yellow', 'cyan').
+    color: str = field(compare=False)
+
+    def __str__(self) -> str:
+        return self.level
+
+
+@dataclass(frozen=True, order=True)
+class PkgcheckResult:
+    """
+    Single scan result representation.
+    """
+
+    #: Result priority.
+    priority: PkgcheckResultPriority
+
+    #: Keyword name.
+    name: str
+
+    #: Result description.
+    desc: str
+
+
+class PkgcheckResultsGroup(TypedDict):
+    """
+    Scan result item representation.
+    """
+
+    #: Package name.
+    atom: str
+
+    #: Scan results.
+    results: Set[PkgcheckResult]

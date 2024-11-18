@@ -6,6 +6,8 @@
 Results reporter for the web.
 """
 
+import html
+from collections.abc import Sequence
 from typing import Any, TypeVar
 
 from pydantic import validate_call
@@ -13,6 +15,7 @@ from pydantic import validate_call
 from find_work.core.reporters import AbstractReporter
 from find_work.core.types import (
     BugView,
+    PkgcheckResultsGroup,
     VersionBump,
 )
 
@@ -76,3 +79,23 @@ class HtmlBugViewReporter(HtmlReporter[BugView]):
     @validate_call
     def add_result(self, item: BugView) -> None:
         self._items.append(item)
+
+
+class HtmlPkgcheckResultReporter(AbstractReporter[PkgcheckResultsGroup]):
+    reporter_name = "html"
+    result_type = PkgcheckResultsGroup
+
+    _headers: Sequence[str] = (
+        "Level",
+        "Class",
+        "Description",
+    )
+
+    def add_result(self, item: PkgcheckResultsGroup) -> None:
+        self.options.echo("<h2>{}</h2>".format(html.escape(item["atom"])))
+        self.options.echo(tabulate(item["results"], self._headers,  # type: ignore
+                                   tablefmt="html"))
+
+    @property
+    def active(self) -> bool:
+        return _HAS_TABULATE

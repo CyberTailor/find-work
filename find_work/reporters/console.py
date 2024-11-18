@@ -13,6 +13,7 @@ from pydantic import validate_call
 from find_work.core.reporters import AbstractReporter
 from find_work.core.types import (
     BugView,
+    PkgcheckResultsGroup,
     VersionBump,
 )
 
@@ -64,3 +65,17 @@ class ConsoleBugViewReporter(TabulateConsoleReporter[BugView]):
     @validate_call
     def add_result(self, item: BugView) -> None:
         self._items.append(item)
+
+
+class ConsolePkgcheckResultReporter(AbstractReporter[PkgcheckResultsGroup]):
+    reporter_name = "console"
+    result_type = PkgcheckResultsGroup
+
+    def add_result(self, item: PkgcheckResultsGroup) -> None:
+        self.options.echo()
+        self.options.secho(item["atom"], fg="cyan", bold=True)
+        for result in item["results"]:
+            self.options.echo("\t", nl=False)
+            self.options.secho(result.name, fg=result.priority.color, nl=False)
+            self.options.echo(": ", nl=False)
+            self.options.echo(result.desc)
