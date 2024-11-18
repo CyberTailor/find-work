@@ -14,6 +14,15 @@ Release Notes
 - **Breaking**: Rename the implementation hook for plugins from ``hook_impl`` to
   ``cli_hook_impl``.
 
+- Add result reporters. Result reporter is a Python class, which is loadable via
+  entry points and can output results of a certain type to the standard output.
+
+- Add built-in result reporters for console and HTML.
+  
+- Add an option to list result reporters with ``find-work -R list``.
+
+- Display exit messages to the standard error.
+
 0.91.2
 ------
 

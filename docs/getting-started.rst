@@ -31,5 +31,11 @@ You can use short command aliases, for example:
 
    find-work -I rep -r gentoo_ovl_guru out
 
+Multiple result reporters are supported:
+
+.. prompt:: bash
+
+   find-work -R list
+
 All data from APIs is cached for a day, so don't hesitate running the command
 again and again!

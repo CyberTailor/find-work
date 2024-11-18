@@ -3,6 +3,7 @@
 # No warranty
 
 import functools
+import importlib.metadata
 import tomllib
 from datetime import date
 from importlib.resources import files
@@ -22,6 +23,7 @@ from find_work.core.constants import (
     PACKAGE,
     VERSION,
 )
+from find_work.core.reporters import AbstractReporter
 
 import find_work.app.data
 from find_work.app.config import (
@@ -75,6 +77,22 @@ def load_config() -> ConfigRoot:
     return ConfigRoot.model_validate(toml)
 
 
+def reporter_callback(ctx: click.Context,
+                      param: click.Parameter, value: str) -> None:
+    if value == "list":
+        reporters: set[str] = set()
+        for ep in importlib.metadata.entry_points(group="find_work.reporters"):
+            cls = ep.load()
+            if (
+                isinstance(cls, type)
+                and issubclass(cls, AbstractReporter)
+                and cls.reporter_name not in reporters
+            ):
+                click.echo(cls.reporter_name)
+                reporters.add(cls.reporter_name)
+        ctx.exit()
+
+
 @click.group(cls=ClickCustomFlagsGroup, config=load_config(),
              context_settings={"help_option_names": ["-h", "--help"]})
 @click.option("-m", "--maintainer", metavar="EMAIL",
@@ -83,10 +101,13 @@ def load_config() -> ConfigRoot:
               help="Be less verbose.")
 @click.option("-I", "--installed", is_flag=True,
               help="Only match installed packages.")
+@click.option("-R", "--reporter", default="console",
+              callback=reporter_callback, is_eager=True,
+              help="Select a reporter to use for output.")
 @click.version_option(VERSION, "-V", "--version")
 @click.pass_context
-def cli(ctx: click.Context, maintainer: str | None, quiet: bool = False,
-        installed: bool = False) -> None:
+def cli(ctx: click.Context, maintainer: str | None, reporter: str,
+        quiet: bool = False, installed: bool = False) -> None:
     """
     Personal advice utility for Gentoo package maintainers.
 
@@ -98,6 +119,7 @@ def cli(ctx: click.Context, maintainer: str | None, quiet: bool = False,
 
     options.verbose = not quiet
     options.only_installed = installed
+    options.reporter_name = reporter
     if colors_disabled_by_env():
         options.colors = False
 

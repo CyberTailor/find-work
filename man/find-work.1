@@ -2,7 +2,7 @@
 .\" SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
 .\" SPDX-License-Identifier: WTFPL
 .\" No warranty
-.Dd April 28, 2024
+.Dd November 18, 2024
 .Dt FIND-WORK 1
 .Os
 .Sh NAME
@@ -14,6 +14,7 @@
 .Nm
 .Op Fl qI
 .Op Fl m Ar email
+.Op Fl R Ar reporter
 .Ar module
 .Op Ar arg ...
 .Ar command
@@ -36,6 +37,12 @@ Only match packages maintained by the specified person.
 Be less verbose.
 .It Fl I , -installed
 Only match installed packages.
+.It Fl R Ar reporter, Fl -reporter Ar reporter
+Select a reporter to use for output.
+.Pp
+Use
+.Ql find-work -R list
+to see available options.
 .It Fl V , -version
 Display program version and exit immediately.
 .El
