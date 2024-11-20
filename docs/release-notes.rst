@@ -11,6 +11,9 @@ Release Notes
 - **Breaking**: Split the program into two Python packages (``core`` and
   ``app``). All plugins need to be updated accordingly.
 
+- **Breaking**: Make entry points used by the package versioned for forward and
+  backward compatibility.
+
 - **Breaking**: Rename the implementation hook for plugins from ``hook_impl`` to
   ``cli_hook_impl``.
 
