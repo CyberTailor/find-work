@@ -12,7 +12,7 @@
 project = 'find-work'
 author = 'Anna (cybertailor) Vyalkova'
 copyright = f'2024, {author}'
-release = '0.91.2'
+release = '0.990.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
