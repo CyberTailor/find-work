@@ -5,8 +5,8 @@
 Release Notes
 =============
 
-0.91.2-next
------------
+0.990.0
+-------
 
 - **Breaking**: Split the program into two Python packages (``core`` and
   ``app``). All plugins need to be updated accordingly.
