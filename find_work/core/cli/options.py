@@ -15,6 +15,7 @@ import click
 from pydantic import BaseModel, ConfigDict, Field, validate_call
 
 from find_work.core.cli.messages import Result
+from find_work.core.constants import REPORTERS_ENTRY_POINT
 from find_work.core.types.breadcrumbs import Breadcrumbs
 
 if TYPE_CHECKING:
@@ -95,7 +96,7 @@ class MainOptions(OptionsBase):
 
         from find_work.core.reporters import AbstractReporter
 
-        for ep in importlib.metadata.entry_points(group="find_work.reporters"):
+        for ep in importlib.metadata.entry_points(group=REPORTERS_ENTRY_POINT):
             cls = ep.load()
             if (
                 isinstance(cls, type)

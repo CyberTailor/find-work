@@ -58,7 +58,7 @@ test = [
 [project.scripts]
 find-work = "find_work.app.__main__:cli"
 
-[project.entry-points."find_work.reporters"]
+[project.entry-points."find_work.reporters.v1"]
 ConsoleBugViewReporter = "find_work.reporters.console:ConsoleBugViewReporter"
 ConsolePkgcheckResultReporter = "find_work.reporters.console:ConsolePkgcheckResultReporter"
 ConsoleVersionBumpReporter = "find_work.reporters.console:ConsoleVersionBumpReporter"

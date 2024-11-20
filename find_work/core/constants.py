@@ -23,3 +23,9 @@ USER_AGENT = f"Mozilla/5.0 (compatible; {PACKAGE}/{VERSION}; +{HOMEPAGE})"
 
 #: Default config file name.
 DEFAULT_CONFIG = "default_config.toml"
+
+#: Entry point for CLI plugins.
+PLUGINS_ENTRY_POINT = "find_work.plugins.v1"
+
+#: Entry point for result reporters.
+REPORTERS_ENTRY_POINT = "find_work.reporters.v1"

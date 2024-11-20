@@ -21,6 +21,8 @@ from find_work.core.constants import (
     DEFAULT_CONFIG,
     ENTITY,
     PACKAGE,
+    PLUGINS_ENTRY_POINT,
+    REPORTERS_ENTRY_POINT,
     VERSION,
 )
 from find_work.core.reporters import AbstractReporter
@@ -45,7 +47,7 @@ def get_plugin_manager() -> pluggy.PluginManager:
 
     plugman = pluggy.PluginManager(PACKAGE)
     plugman.add_hookspecs(PluginSpec)
-    plugman.load_setuptools_entrypoints("find_work.plugins")
+    plugman.load_setuptools_entrypoints(PLUGINS_ENTRY_POINT)
 
     return plugman
 
@@ -81,7 +83,7 @@ def reporter_callback(ctx: click.Context,
                       param: click.Parameter, value: str) -> str:
     if value == "list":
         reporters: set[str] = set()
-        for ep in importlib.metadata.entry_points(group="find_work.reporters"):
+        for ep in importlib.metadata.entry_points(group=REPORTERS_ENTRY_POINT):
             cls = ep.load()
             if (
                 isinstance(cls, type)
