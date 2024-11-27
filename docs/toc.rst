@@ -9,6 +9,8 @@ Table of Contents
    :caption: Home
 
    index
+   versioning
+   release-notes
 
 .. toctree::
    :caption: User Documentation
@@ -16,7 +18,6 @@ Table of Contents
    installation
    getting-started
    configuration
-   release-notes
 
 .. toctree::
    :caption: Developer Documentation
