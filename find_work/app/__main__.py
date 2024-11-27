@@ -98,7 +98,8 @@ def reporter_callback(ctx: click.Context,
 
 
 @click.group(cls=ClickCustomFlagsGroup, config=load_config(),
-             context_settings={"help_option_names": ["-h", "--help"]})
+             context_settings={"help_option_names": ["-h", "--help"]},
+             epilog="See `man find-work` for the full help.")
 @click.option("-m", "--maintainer", metavar="EMAIL",
               help="Filter by package maintainer.")
 @click.option("-q", "--quiet", is_flag=True,
@@ -116,8 +117,6 @@ def cli(ctx: click.Context, category: str | None, maintainer: str | None,
         reporter: str, quiet: bool = False, installed: bool = False) -> None:
     """
     Personal advice utility for Gentoo package maintainers.
-
-    See `man find-work` for the full help.
     """
 
     ctx.ensure_object(MainOptions)
