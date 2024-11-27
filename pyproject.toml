@@ -25,6 +25,9 @@ dependencies = [
     "pluggy<2",
     "pydantic<3,>=2",
     "requests<3,>=2",
+
+    # needed for python3.11 compatibility
+    "typing_extensions<5,>=4.3.0",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",

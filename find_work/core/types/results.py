@@ -9,10 +9,10 @@ Public type definitions for result types, to be used by plugins.
 from collections.abc import Set
 from dataclasses import field
 from itertools import zip_longest
-from typing import TypedDict
 
 from pydantic import validate_call
 from pydantic.dataclasses import dataclass
+from typing_extensions import TypedDict
 
 from find_work.core.types import VersionPart
 

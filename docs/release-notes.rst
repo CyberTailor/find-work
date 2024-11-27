@@ -12,6 +12,12 @@ Release Notes
 
 - **New**: JSON results reporter.
 
+- Fix compatibility with Python 3.11.
+
+*Dependencies introduced:*
+
+* :pypi:`typing_extensions`
+
 0.990.0
 -------
 
