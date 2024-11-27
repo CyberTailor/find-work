@@ -43,6 +43,9 @@ keywords = ["gentoo", "ebuild", "repository", "maintainer"]
 tabulate = [
     "tabulate",
 ]
+xml = [
+    "lxml>=4.5",
+]
 
 docs = [
     "insipid-sphinx-theme",
@@ -65,6 +68,9 @@ ConsoleVersionBumpReporter = "find_work.reporters.console:ConsoleVersionBumpRepo
 HtmlBugViewReporter = "find_work.reporters.html:HtmlBugViewReporter"
 HtmlPkgcheckResultReporter = "find_work.reporters.html:HtmlPkgcheckResultReporter"
 HtmlVersionBumpReporter = "find_work.reporters.html:HtmlVersionBumpReporter"
+XmlBugViewReporter = "find_work.reporters.xml:XmlBugViewReporter"
+XmlPkgcheckResultReporter = "find_work.reporters.xml:XmlPkgcheckResultReporter"
+XmlVersionBumpReporter = "find_work.reporters.xml:XmlVersionBumpReporter"
 
 [project.urls]
 Home = "https://find-work.sysrq.in/"
@@ -120,6 +126,9 @@ exclude_dirs = [
     "find_work/core/tests",
     "find_work/reporters/tests",
 ]
+skips = [
+    "B410", # import_lxml
+]
 
 [tool.bumpversion]
 current_version = "0.990.0"
@@ -149,6 +158,7 @@ env_list = ["3.11", "3.12", "3.13", "lint"]
 description = "run the tests + mypy under {base_python}"
 ignore_errors = true
 deps = [
+    "lxml-stubs",
     "mypy",
     "types-requests",
     "types-tabulate",
@@ -156,6 +166,7 @@ deps = [
 extras = [
     "tabulate",
     "test",
+    "xml",
 ]
 commands = [
     ["pytest", "-vv", "{tty:--color=yes}", "{posargs:find_work}"],

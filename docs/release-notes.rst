@@ -5,6 +5,11 @@
 Release Notes
 =============
 
+0.990.0-next
+------------
+
+- **New**: XML results reporter.
+
 0.990.0
 -------
 
