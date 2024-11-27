@@ -41,6 +41,10 @@ class HtmlReporter(AbstractReporter[T]):
 
         return self
 
+    @validate_call
+    def add_result(self, item: T) -> None:
+        self._items.append(item)
+
     @property
     def active(self) -> bool:
         return _HAS_TABULATE
@@ -60,7 +64,7 @@ class HtmlVersionBumpReporter(HtmlReporter[VersionBump]):
 
     @validate_call
     def add_result(self, item: VersionBump) -> None:
-        self._items.append(item)
+        super().add_result(item)
 
 
 class HtmlBugViewReporter(HtmlReporter[BugView]):
@@ -78,7 +82,7 @@ class HtmlBugViewReporter(HtmlReporter[BugView]):
 
     @validate_call
     def add_result(self, item: BugView) -> None:
-        self._items.append(item)
+        super().add_result(item)
 
 
 class HtmlPkgcheckResultReporter(AbstractReporter[PkgcheckResultsGroup]):
