@@ -44,6 +44,7 @@ tabulate = [
     "tabulate",
 ]
 
+[dependency-groups]
 docs = [
     "insipid-sphinx-theme",
     "sphinx",
@@ -53,6 +54,17 @@ test = [
     "pkgcore",
     "pytest",
     "pytest-import-check",
+]
+typecheck = [
+    "mypy",
+    "types-requests",
+    "types-tabulate",
+]
+lint = [
+    "bandit",
+    "pycodestyle",
+    "pyflakes",
+    "reuse",
 ]
 
 [project.scripts]
@@ -148,14 +160,12 @@ env_list = ["3.11", "3.12", "3.13", "lint"]
 [tool.tox.env_run_base]
 description = "run the tests + mypy under {base_python}"
 ignore_errors = true
-deps = [
-    "mypy",
-    "types-requests",
-    "types-tabulate",
+dependency_groups = [
+    "test",
+    "typecheck",
 ]
 extras = [
     "tabulate",
-    "test",
 ]
 commands = [
     ["pytest", "-vv", "{tty:--color=yes}", "{posargs:find_work}"],
@@ -166,12 +176,7 @@ commands = [
 description = "run the linters"
 ignore_errors = true
 skip_install = true
-deps = [
-    "bandit",
-    "pycodestyle",
-    "pyflakes",
-    "reuse",
-]
+dependency_groups = ["lint"]
 commands = [
     ["reuse", "lint"],
     ["pyflakes", "{posargs:find_work}"],
