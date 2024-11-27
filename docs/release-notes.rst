@@ -8,6 +8,8 @@ Release Notes
 0.990.0-next
 ------------
 
+- **New**: Filter results by package category.
+
 - **New**: XML results reporter.
 
 - **New**: JSON results reporter.

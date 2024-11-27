@@ -103,6 +103,8 @@ def reporter_callback(ctx: click.Context,
               help="Filter by package maintainer.")
 @click.option("-q", "--quiet", is_flag=True,
               help="Be less verbose.")
+@click.option("-C", "--category",
+              help="Filter by package category.")
 @click.option("-I", "--installed", is_flag=True,
               help="Only match installed packages.")
 @click.option("-R", "--reporter", default="console",
@@ -110,8 +112,8 @@ def reporter_callback(ctx: click.Context,
               help="Select a reporter to use for output.")
 @click.version_option(VERSION, "-V", "--version")
 @click.pass_context
-def cli(ctx: click.Context, maintainer: str | None, reporter: str,
-        quiet: bool = False, installed: bool = False) -> None:
+def cli(ctx: click.Context, category: str | None, maintainer: str | None,
+        reporter: str, quiet: bool = False, installed: bool = False) -> None:
     """
     Personal advice utility for Gentoo package maintainers.
 
@@ -128,6 +130,9 @@ def cli(ctx: click.Context, maintainer: str | None, reporter: str,
         options.colors = False
 
     options.breadcrumbs.feed(date.today().toordinal())
+    if category:
+        options.category = category
+        options.breadcrumbs.feed_option("category", options.category)
     if maintainer:
         options.maintainer = maintainer
         options.breadcrumbs.feed_option("maintainer", options.maintainer)

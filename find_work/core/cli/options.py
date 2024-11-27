@@ -66,6 +66,9 @@ class MainOptions(OptionsBase):
     #: Display only packages for given maintainer email.
     maintainer: str = ""
 
+    #: Display only packages in the given category.
+    category: str = ""
+
     #: Display installed packages only.
     only_installed: bool = False
 
