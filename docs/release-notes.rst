@@ -10,6 +10,8 @@ Release Notes
 
 - **New**: XML results reporter.
 
+- **New**: JSON results reporter.
+
 0.990.0
 -------
 
