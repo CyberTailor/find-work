@@ -18,7 +18,7 @@ If you want to learn how to use find-work, check out the following resources:
 * :doc:`installation`
 * :doc:`getting-started`
 
-If you want to develop a new plugin, please refer to to :doc:`reference`.
+If you want to develop a new plugin, please refer to :doc:`reference`.
 
 If you need help, or want to talk to the developers, use our chat rooms:
 
