@@ -20,6 +20,10 @@ Release Notes
 
 * :pypi:`typing_extensions`
 
+*Dependencies removed:*
+
+* :pypi:`gentoopm`
+
 0.990.0
 -------
 
