@@ -5,7 +5,7 @@
 Release Notes
 =============
 
-0.990.0-next
+1.0.0
 ------------
 
 - **New**: Filter results by package category.
