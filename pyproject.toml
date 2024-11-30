@@ -123,7 +123,6 @@ check_untyped_defs = true
 module = [
     "click_aliases",
     "deepmerge",
-    "pkgcheck",
 ]
 ignore_missing_imports = true
 
