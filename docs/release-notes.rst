@@ -6,7 +6,7 @@ Release Notes
 =============
 
 1.0.0
-------------
+-----
 
 - **New**: Filter results by package category.
 
