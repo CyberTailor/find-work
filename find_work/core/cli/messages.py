@@ -38,6 +38,9 @@ class Status(StrEnum):
     #: Serialization and writing cache file.
     CACHE_WRITE = "Caching data"
 
+    #: Sorting and filtering tasks.
+    DATA_SORTING = "Sorting data"
+
 
 class Result(Message, Enum):
     """
