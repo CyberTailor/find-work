@@ -132,9 +132,6 @@ exclude_dirs = [
     "find_work/core/tests",
     "find_work/reporters/tests",
 ]
-skips = [
-    "B410", # import_lxml
-]
 
 [tool.bumpversion]
 current_version = "1.0.0"
