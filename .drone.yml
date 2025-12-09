@@ -8,3 +8,6 @@ name: default
 steps:
   - name: test
     image: fedorapython/fedora-python-tox:latest
+    environment:
+      TOX_PARAMS: >-
+        -c pyproject.toml
