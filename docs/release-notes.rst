@@ -1,9 +1,14 @@
-.. SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
+.. SPDX-FileCopyrightText: 2024-2026 Anna <cyber@sysrq.in>
 .. SPDX-License-Identifier: WTFPL
 .. No warranty.
 
 Release Notes
 =============
+
+1.0.0-next
+----------
+
+- Validate category names (``-C``) to make sure it is safe to use them.
 
 1.0.0
 -----

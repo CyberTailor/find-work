@@ -181,8 +181,8 @@ dependency_groups = [
     "typecheck",
 ]
 commands = [
-    ["pytest", "-vv", "{tty:--color=yes}", "{posargs:find_work}"],
-    ["mypy", "--explicit-package-bases", "{posargs:find_work}"],
+    ["pytest", "-vv", "{tty:--color=yes}", { replace = "posargs", default = ["find_work"], extend = true }],
+    ["mypy", "--explicit-package-bases", "find_work"],
 ]
 
 [tool.tox.env.lint]

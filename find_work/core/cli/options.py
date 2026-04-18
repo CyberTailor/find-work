@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: WTFPL
-# SPDX-FileCopyrightText: 2024 Anna <cyber@sysrq.in>
+# SPDX-FileCopyrightText: 2024-2026 Anna <cyber@sysrq.in>
 # No warranty
 
 """
@@ -7,6 +7,7 @@ Command line options implemented as a single object.
 """
 
 import importlib.metadata
+import re
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
 from typing import Any, TYPE_CHECKING
@@ -21,6 +22,10 @@ from find_work.core.types.breadcrumbs import Breadcrumbs
 if TYPE_CHECKING:
     # Circular import.
     from find_work.core.reporters import AbstractReporter
+
+# regex to match valid category names
+# from src/pkgcore/ebuild/cpv.py
+isvalid_cat_re = re.compile(r"^(?:[A-Za-z0-9_][A-Za-z0-9+_.-]*)$")
 
 
 class OptionsBase(BaseModel, ABC):
@@ -67,7 +72,7 @@ class MainOptions(OptionsBase):
     maintainer: str = ""
 
     #: Display only packages in the given category.
-    category: str = ""
+    category: str = Field(default="", pattern=isvalid_cat_re)
 
     #: Display installed packages only.
     only_installed: bool = False
