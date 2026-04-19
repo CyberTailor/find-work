@@ -60,7 +60,7 @@ sure the correct authorship appears.
 
 [1]: https://git-send-email.io/
 [2]: https://git-scm.com/docs/git-request-pull
-[gh]: http://github.com/cybertailor/find-work
+[codeberg]: https://codeberg.org/cybertailor/find-work
 
 
 IRC
